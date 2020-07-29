@@ -14,10 +14,15 @@ brahma_sql = pathlib.Path(__file__).parent.parent.absolute() / 'source' / 'brahm
 
 
 def run_sql_script(script_path):
+    old_cwd = os.getcwd()
+    os.chdir(script_path.parent)
+
     mysql_command = f'mysql --user {database_user} -p"{database_password}" --host {database_host} {database_name}'
     command = f'{mysql_command} < {script_path}'
     print(command)
     os.system(command)
+
+    os.chdir(old_cwd)
 
 
 @pytest.fixture(scope='session')
