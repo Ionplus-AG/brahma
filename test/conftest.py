@@ -37,8 +37,6 @@ def _run_sql_script(script_path, config):
 def db_connection(request):
     config = request.config
 
-    print(config.getini('mysql_password'))
-
     connection = mysql.connector.connect(
         host=config.getini('mysql_host'),
         user=config.getini('mysql_user'),
