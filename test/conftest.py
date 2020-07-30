@@ -15,6 +15,13 @@ def pytest_addoption(parser):
     parser.addini('mysql_database_name', 'The MySQL database name', None, 'brahma_test')
 
 
+def _grep_command(not_matching):
+    if os.name == 'nt':
+        return f'findstr /V /C:"{not_matching}"'
+
+    return f'grep -v "{not_matching}"'
+
+
 def _run_sql_script(script_path, config):
     old_cwd = os.getcwd()
     os.chdir(script_path.parent)
@@ -27,7 +34,8 @@ def _run_sql_script(script_path, config):
         config.getini('mysql_database_name'),
         '<', str(script_path),
         '2>&1',
-        '| findstr /V /C:"password on the command line interface can be insecure"',
+        '|',
+        _grep_command('password on the command line interface can be insecure'),
         '1>&2',
     ])
 
