@@ -1,0 +1,12 @@
+image: Ubuntu
+
+stack: python 3.8
+
+install:
+  - pip install pipenv
+  - pipenv sync
+
+test_script:
+  - sh: echo "Hello, world!"
+
+build: off
