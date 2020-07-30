@@ -26,6 +26,9 @@ def _run_sql_script(script_path, config):
         '--host', config.getini('mysql_host'),
         config.getini('mysql_database_name'),
         '<', str(script_path),
+        '2>&1',
+        '| findstr /V /C:"password on the command line interface can be insecure"',
+        '1>&2',
     ])
 
     os.system(command)
