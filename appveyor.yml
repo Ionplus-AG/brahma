@@ -7,6 +7,10 @@ install:
   - pipenv sync
 
 test_script:
-  - sh: py.test --capture=tee-sys
+  - sh: py.test --capture=tee-sys --junit-xml=test-result.xml
+
+on_finish:
+  - sh: |
+      find "$APPVEYOR_BUILD_FOLDER" -type f -name 'test*.xml' -print0 | xargs -0 -I '{}' curl -F 'file=@{}' "https://ci.appveyor.com/api/testresults/junit/$APPVEYOR_JOB_ID"
 
 build: off
