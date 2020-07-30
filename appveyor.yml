@@ -7,6 +7,6 @@ install:
   - pipenv sync
 
 test_script:
-  - sh: echo "Hello, world!"
+  - sh: py.test --capture=tee-sys
 
 build: off
