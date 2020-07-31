@@ -13,6 +13,10 @@ def pytest_addoption(parser):
     parser.addini('mysql_user', 'The MySQL database user', None, 'root')
     parser.addini('mysql_password', 'The MySQL users password', None)
     parser.addini('mysql_database_name', 'The MySQL database name', None, 'brahma_test')
+#
+# Copyright (c) Ionplus AG and contributors. All rights reserved.
+# Licensed under the MIT license. See LICENSE file in the project root for details.
+#
 
 
 def _grep_command(not_matching):
