@@ -4,6 +4,14 @@
 #
 
 source tables/customer.sql;
+
+source tables/project_advisor.sql;
+source tables/project_status.sql;
+source tables/project_type.sql;
+source tables/report_type.sql;
+source tables/research_type.sql;
+source tables/project.sql;
+
 source tables/schema_change.sql;
 
 insert into schema_change (version, date_applied) values (1, NOW());
