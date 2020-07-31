@@ -12,6 +12,8 @@ source tables/report_type.sql;
 source tables/research_type.sql;
 source tables/project.sql;
 
+source tables/isotope.sql;
+
 source tables/schema_change.sql;
 
 insert into schema_change (version, date_applied) values (1, NOW());
