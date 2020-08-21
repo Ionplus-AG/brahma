@@ -3,6 +3,8 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
+set names utf8mb4;
+
 source projects/customer.sql;
 source projects/project_advisor.sql;
 source projects/project_status.sql;
