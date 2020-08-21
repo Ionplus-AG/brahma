@@ -23,10 +23,10 @@ create table project (
     invoice int unsigned, # TODO, ewc 2020-07-31: what is stored in this field?
     invoice_date date,
 
-    constraint correspondence_customer_foreign_key
+    constraint project_correspondence_customer_foreign_key
     foreign key (correspondence_customer_number) references customer(number),
 
-    constraint invoice_customer_foreign_key
+    constraint project_invoice_customer_foreign_key
     foreign key (invoice_customer_number) references customer(number),
 
     constraint project_type_foreign_key
@@ -35,7 +35,7 @@ create table project (
     constraint report_type_foreign_key
     foreign key (report_type) references report_type(name),
 
-    constraint research_type_foreign_key
+    constraint project_research_type_foreign_key
     foreign key (research_type) references research_type(name),
 
     constraint project_status_foreign_key

@@ -41,19 +41,19 @@ create table sample (
 
     primary key (isotope_number, number),
 
-    constraint isotope_foreign_key
+    constraint sample_isotope_foreign_key
     foreign key (isotope_number) references isotope(number),
 
-    constraint project_foreign_key
+    constraint sample_project_foreign_key
     foreign key (project_number) references project(number),
 
     constraint sample_type_foreign_key
     foreign key (type) references sample_type(name),
 
-    constraint material_foreign_key
+    constraint sample_material_foreign_key
     foreign key (material) references material(name),
 
-    constraint fraction_foreign_key
+    constraint sample_fraction_foreign_key
     foreign key (fraction) references fraction(name)
 
 ) engine=innodb;
