@@ -16,6 +16,8 @@ source targets/fraction.sql;
 source targets/material.sql;
 source targets/sample_type.sql;
 source targets/sample.sql;
+source targets/preparation_method.sql;
+source targets/preparation.sql;
 
 source misc/schema_change.sql;
 insert into schema_change (version, date_applied) values (1, NOW());
