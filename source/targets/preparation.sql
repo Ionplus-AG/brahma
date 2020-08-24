@@ -4,9 +4,9 @@
 #
 
 create table preparation (
-    number int not null,
-    sample_number int not null,
     isotope_number int not null,
+    sample_number int not null,
+    number int not null,
 
     batch varchar(40) default null,
     comment text,

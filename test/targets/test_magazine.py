@@ -14,8 +14,8 @@ def test_timestamp_is_set(db_cursor, db_connection):
 
     now = datetime.datetime.utcnow()
 
-    db_cursor.execute('select name, last_changed from magazine')
-    last_changed = db_cursor.fetchall()[0][1]
+    db_cursor.execute('select last_changed from magazine')
+    last_changed = db_cursor.fetchall()[0][0]
 
     delta = abs(last_changed - now)
     assert delta.total_seconds() < 5 * 60

@@ -4,8 +4,9 @@
 #
 
 create table sample (
-    number int not null,
     isotope_number int not null,
+    number int not null,
+
     project_number int not null,
     photo varchar(120) default null, # TODO, ewc 2020-08-21: what is stored in this field?
     type varchar(20) not null default 'sample',

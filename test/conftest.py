@@ -6,6 +6,7 @@ import pytest
 
 
 brahma_sql = pathlib.Path(__file__).parent.parent.absolute() / 'source' / 'brahma.sql'
+test_seed_data_sql = pathlib.Path(__file__).parent / 'test_seed_data.sql'
 
 
 def pytest_addoption(parser):
@@ -63,6 +64,7 @@ def db_connection(request):
         cursor.execute(f'create database {database_name} character set utf8mb4 collate utf8mb4_unicode_ci')
 
     _run_sql_script(brahma_sql, config)
+    _run_sql_script(test_seed_data_sql, config)
 
     connection.database = database_name
 

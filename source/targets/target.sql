@@ -6,10 +6,10 @@
 create table target (
     id int primary key auto_increment,
 
-    number int not null,
-    preparation_number int not null,
-    sample_number int not null,
     isotope_number int not null,
+    sample_number int not null,
+    preparation_number int not null,
+    number int not null,
 
     magazine_id int default null,
     magazine_position int default null,
@@ -45,7 +45,7 @@ create table target (
     temp double default null,
     conc_c double default null,
 
-    carrier double default null, # TODO, ewc 2020-08-24: type/constraints TBD
+    carrier double default null,
 
     constraint target_numbers_unique
     unique (isotope_number, sample_number, preparation_number, number),
@@ -66,3 +66,34 @@ create table target (
     constraint target_magazine_position_unique
     unique (magazine_id, magazine_position)
 ) engine=innodb;
+
+delimiter //
+
+create trigger target_insert_updates_magazine_last_changed
+after insert on target for each row
+begin
+ if ( new.magazine_id is not null ) then
+  update magazine set last_changed = current_timestamp where id = new.magazine_id;
+ end if;
+end;
+
+create trigger target_update_updates_magazine_last_changed
+after update on target for each row
+begin
+ if ( new.magazine_id is not null ) then
+  update magazine set last_changed = current_timestamp where id = new.magazine_id;
+ end if;
+ if ( old.magazine_id is not null and old.magazine_id <> new.magazine_id ) then
+  update magazine set last_changed = current_timestamp where id = old.magazine_id;
+ end if;
+end;
+
+create trigger target_delete_updates_magazine_last_changed
+after delete on target for each row
+begin
+ if ( old.magazine_id is not null ) then
+  update magazine set last_changed = current_timestamp where id = old.magazine_id;
+ end if;
+end; //
+
+delimiter ;
