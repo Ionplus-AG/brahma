@@ -20,6 +20,8 @@ source targets/sample_type.sql;
 source targets/sample.sql;
 source targets/preparation_method.sql;
 source targets/preparation.sql;
+source targets/magazine.sql;
+source targets/target.sql;
 
 source misc/schema_change.sql;
 insert into schema_change (version, date_applied) values (1, NOW());
