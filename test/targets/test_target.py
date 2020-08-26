@@ -30,13 +30,19 @@ def test_update_updates_magazine_last_changed(orm, seed_data):
 
 
 def test_delete_updates_magazine_last_changed(orm, seed_data):
-    seed_data.target.magazine_id = seed_data.magazine.id
+    target = orm.add(orm.target(
+        isotope_number=seed_data.preparation.isotope_number,
+        sample_number=seed_data.preparation.sample_number,
+        preparation_number=seed_data.preparation.number,
+        number=31415,
+        magazine_id=seed_data.magazine.id,
+    ))
     orm.commit()
 
     seed_data.magazine.last_changed = MAGAZINE_INIT_DATE
     orm.commit()
 
-    orm.delete(seed_data.target)
+    orm.delete(target)
     orm.commit()
 
     assert seed_data.magazine.last_changed > MAGAZINE_INIT_DATE

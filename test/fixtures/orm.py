@@ -63,6 +63,7 @@ class Orm(object):
 
     def add(self, obj):
         self.__session.add(obj)
+        return obj
 
     def query(self, table):
         return self.__session.query(table)
