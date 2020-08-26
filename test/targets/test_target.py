@@ -46,3 +46,7 @@ def test_delete_updates_magazine_last_changed(orm, seed_data):
     orm.commit()
 
     assert seed_data.magazine.last_changed > MAGAZINE_INIT_DATE
+
+
+def test_designator(seed_data):
+    assert seed_data.target.designator == '3.42.4711.1'

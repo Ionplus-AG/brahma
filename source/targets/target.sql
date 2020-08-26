@@ -10,6 +10,11 @@ create table target (
     sample_number int not null,
     preparation_number int not null,
     number int not null,
+    designator tinytext generated always as (concat(
+        isotope_number, '.',
+        sample_number, '.',
+        preparation_number, '.',
+        number)) virtual,
 
     magazine_id int default null,
     magazine_position int default null,
