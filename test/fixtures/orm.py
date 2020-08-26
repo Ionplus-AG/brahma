@@ -18,12 +18,20 @@ class Orm(object):
         self.__session = session
 
     @property
+    def schema_change(self):
+        return self.__base.classes.schema_change
+
+    @property
     def customer(self):
         return self.__base.classes.customer
 
     @property
     def project(self):
         return self.__base.classes.project
+
+    @property
+    def isotope(self):
+        return self.__base.classes.isotope
 
     @property
     def sample(self):
@@ -70,7 +78,7 @@ class Orm(object):
 
 
 @pytest.fixture(scope='session')
-def orm_engine(request, db_connection):
+def orm_engine(request, brahma_schema):
     config = request.config
     host = config.getini('mysql_host')
     user = config.getini('mysql_user')

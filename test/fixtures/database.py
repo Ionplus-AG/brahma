@@ -53,7 +53,7 @@ def _run_sql_script(script_path, config):
 
 
 @pytest.fixture(scope='session')
-def db_connection(request):
+def brahma_schema(request):
     config = request.config
 
     connection = mysql.connector.connect(
@@ -69,13 +69,4 @@ def db_connection(request):
     _run_sql_script(brahma_sql, config)
 
     connection.database = database_name
-
-    yield connection
     connection.close()
-
-
-@pytest.fixture(scope='function')
-def db_cursor(db_connection):
-    cursor = db_connection.cursor()
-    yield cursor
-    cursor.close()
