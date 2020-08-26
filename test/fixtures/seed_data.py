@@ -22,6 +22,7 @@ class SeedData(object):
         self.target = self.add_target(number=1)
 
         self.magazine = self.add(orm.magazine(name='test_mag'))
+        self.machine = self.add(orm.machine(name='test machine', prefix='test'))
 
     def add_sample(self, project=None, **kwargs):
         if not project:

@@ -45,6 +45,10 @@ class Orm(object):
     def measurement_sequence(self):
         return self.__base.classes.measurement_sequence
 
+    @property
+    def machine(self):
+        return self.__base.classes.machine
+
     def add(self, obj):
         self.__session.add(obj)
 
