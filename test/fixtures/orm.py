@@ -49,6 +49,10 @@ class Orm(object):
     def machine(self):
         return self.__base.classes.machine
 
+    @property
+    def cycle_definition(self):
+        return self.__base.classes.cycle_definition
+
     def add(self, obj):
         self.__session.add(obj)
 

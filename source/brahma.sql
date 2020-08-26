@@ -25,6 +25,7 @@ source targets/target.sql;
 source targets/measurement_sequence.sql;
 
 source results/machine.sql;
+source results/cycle_definition.sql;
 
 source misc/schema_change.sql;
 insert into schema_change (version, date_applied) values (1, NOW());

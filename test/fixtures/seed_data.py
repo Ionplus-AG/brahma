@@ -23,6 +23,11 @@ class SeedData(object):
 
         self.magazine = self.add(orm.magazine(name='test_mag'))
         self.machine = self.add(orm.machine(name='test machine', prefix='test'))
+        self.cycle_definition = self.add(orm.cycle_definition(
+            isotope_number=3,
+            machine_number=self.machine.number,
+            sequence=0
+        ))
 
     def add_sample(self, project=None, **kwargs):
         if not project:
