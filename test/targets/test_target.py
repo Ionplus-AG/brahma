@@ -11,79 +11,73 @@ MAGAZINE_INIT_DATE = datetime.datetime.fromisoformat('2000-01-01 08:15')
 
 
 @pytest.fixture(autouse=True)
-def set_up(db_cursor, db_connection):
-    db_cursor.execute(
-        "insert into magazine (id, name, last_changed) values (%s, 'test_mag', %s)",
-        (MAGAZINE_ID, MAGAZINE_INIT_DATE))
-    db_connection.commit()
+def set_up(orm):
+    orm.add(orm.magazine(id=MAGAZINE_ID, name='test_mag', last_changed=MAGAZINE_INIT_DATE))
+    orm.commit()
 
 
 @pytest.fixture(autouse=True)
-def tear_down(db_cursor, db_connection):
+def tear_down(orm):
     yield
-    db_cursor.execute('delete from target where id = %s', (TARGET_ID,))
-    db_cursor.execute('delete from magazine where id = %s', (MAGAZINE_ID,))
-    db_connection.commit()
+    orm.query(orm.target).filter(orm.target.id == TARGET_ID).delete()
+    orm.query(orm.magazine).filter(orm.magazine.id == MAGAZINE_ID).delete()
+    orm.commit()
 
 
-def get_magazine_last_changed(db_cursor):
-    db_cursor.execute('select last_changed from magazine where id = %s', (MAGAZINE_ID,))
-    return db_cursor.fetchall()[0][0]
+def get_magazine_last_changed(orm):
+    return orm.query(orm.magazine).filter(orm.magazine.id == MAGAZINE_ID).one().last_changed
 
 
-def test_insert_updates_magazine_last_changed(db_cursor, db_connection):
-    db_cursor.execute(
-        """
-        insert into target (id, isotope_number, sample_number, preparation_number, number, magazine_id)
-        values (%s, 3, 101, 1001, %s, %s)
-        """,
-        (TARGET_ID, TARGET_ID, MAGAZINE_ID))
-    db_connection.commit()
+def test_insert_updates_magazine_last_changed(orm):
+    orm.add(orm.target(
+        id=TARGET_ID,
+        isotope_number=3,
+        sample_number=101,
+        preparation_number=1001,
+        number=TARGET_ID,
+        magazine_id=MAGAZINE_ID
+    ))
+    orm.commit()
 
-    assert get_magazine_last_changed(db_cursor) > MAGAZINE_INIT_DATE
-
-
-def test_update_updates_magazine_last_changed(db_cursor, db_connection):
-    db_cursor.execute(
-        f"""
-        insert into target (id, isotope_number, sample_number, preparation_number, number)
-        values (%s, 3, 101, 1001, %s)
-        """,
-        (TARGET_ID, TARGET_ID))
-    db_connection.commit()
-
-    db_cursor.execute('update target set magazine_id = %s where id = %s',
-                      (MAGAZINE_ID, TARGET_ID))
-    db_connection.commit()
-
-    assert get_magazine_last_changed(db_cursor) > MAGAZINE_INIT_DATE
+    assert get_magazine_last_changed(orm) > MAGAZINE_INIT_DATE
 
 
-def test_delete_updates_magazine_last_changed(db_cursor, db_connection):
-    db_cursor.execute(
-        """
-        insert into target (id, isotope_number, sample_number, preparation_number, number, magazine_id)
-        values (%s, 3, 101, 1001, %s, %s)
-        """,
-        (TARGET_ID, TARGET_ID, MAGAZINE_ID))
-    db_connection.commit()
+def test_update_updates_magazine_last_changed(orm):
+    target = orm.target(
+        id=TARGET_ID,
+        isotope_number=3,
+        sample_number=101,
+        preparation_number=1001,
+        number=TARGET_ID)
+    orm.add(target)
+    orm.commit()
 
-    db_cursor.execute('update magazine set last_changed = %s where id = %s',
-                      (MAGAZINE_INIT_DATE, MAGAZINE_ID))
-    db_connection.commit()
+    assert get_magazine_last_changed(orm) == MAGAZINE_INIT_DATE
 
-    db_cursor.execute('delete from target where id = %s', (TARGET_ID,))
+    target.magazine_id = MAGAZINE_ID
+    orm.commit()
 
-    assert get_magazine_last_changed(db_cursor) > MAGAZINE_INIT_DATE
-
-
-def test_insert_without_magazine_doesnt_throw(db_cursor, db_connection):
-    pass
+    assert get_magazine_last_changed(orm) > MAGAZINE_INIT_DATE
 
 
-def test_update_without_magazine_doesnt_throw(db_cursor, db_connection):
-    pass
+def test_delete_updates_magazine_last_changed(orm):
+    target = orm.target(
+        id=TARGET_ID,
+        isotope_number=3,
+        sample_number=101,
+        preparation_number=1001,
+        number=TARGET_ID,
+        magazine_id=MAGAZINE_ID)
+    orm.add(target)
+    orm.commit()
 
+    magazine = orm.query(orm.magazine).filter(orm.magazine.id == MAGAZINE_ID).one()
+    magazine.last_changed = MAGAZINE_INIT_DATE
+    orm.commit()
 
-def test_delete_without_magazine_doesnt_throw(db_cursor, db_connection):
-    pass
+    assert get_magazine_last_changed(orm) == MAGAZINE_INIT_DATE
+
+    orm.delete(target)
+    orm.commit()
+
+    assert get_magazine_last_changed(orm) > MAGAZINE_INIT_DATE
