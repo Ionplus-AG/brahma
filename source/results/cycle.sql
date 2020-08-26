@@ -33,3 +33,43 @@ create table cycle (
     constraint cycle_run_number_definition_unique
     unique (run_id, number, cycle_definition_id)
 ) engine=innodb;
+
+create view cycle_ratios as
+    select
+           cycle.id as cycle_id,
+
+           if((r >= 0) && (a > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
+               r/(a/1e6/electrical_charge/elementary_charge*runtime_micros),
+               null) as r_a,
+
+           if((r >= 0) && (b > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
+               r/(b/1e6/electrical_charge/elementary_charge*runtime_micros),
+               null) as r_b,
+
+           if((g1 >= 0) && (a > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
+               g1/(a/1e6/electrical_charge/elementary_charge*runtime_micros),
+               null) as g1_a,
+
+           if((g1 >= 0) && (b > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
+               g1/(b/1e6/electrical_charge/elementary_charge*runtime_micros),
+               null) as g1_b,
+
+           if((g2 >= 0) && (a > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
+               g2/(a/1e6/electrical_charge/elementary_charge*runtime_micros),
+               null) as g2_a,
+
+           if((g2 >= 0) && (b > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
+               g2/(b/1e6/electrical_charge/elementary_charge*runtime_micros),
+               null) as g2_b,
+
+           if((a > 0) && (b >= 0),
+               b/a,
+               null) as b_a,
+
+           if((ana > 0) && (a >= 0) && (electrical_charge <> 0),
+               a/ana/electrical_charge,
+               null) as a_ana
+
+    from cycle
+        inner join cycle_definition cd on cycle.cycle_definition_id = cd.id
+        inner join (select (1.60217662E-19) as elementary_charge) const;
