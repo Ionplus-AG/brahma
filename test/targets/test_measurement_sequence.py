@@ -3,24 +3,61 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 import datetime
+
 import pytest
 
-TARGET_ID = 4711
-MAGAZINE_ID = 42
 MAGAZINE_INIT_DATE = datetime.datetime.fromisoformat('2000-01-01 08:15')
 
 
 @pytest.fixture(autouse=True)
-def set_up(db_cursor, db_connection):
-    db_cursor.execute(
-        "insert into magazine (id, name, last_changed) values (%s, 'test_mag', %s)",
-        (MAGAZINE_ID, MAGAZINE_INIT_DATE))
-    db_connection.commit()
+def set_up(orm, seed_data):
+    seed_data.target.magazine_id = seed_data.magazine.id
+    orm.commit()
+
+    seed_data.magazine.last_changed = MAGAZINE_INIT_DATE
+    orm.commit()
 
 
-@pytest.fixture(autouse=True)
-def tear_down(db_cursor, db_connection):
-    yield
-    db_cursor.execute('delete from target where id = %s', (TARGET_ID,))
-    db_cursor.execute('delete from magazine where id = %s', (MAGAZINE_ID,))
-    db_connection.commit()
+def test_insert_updates_magazine_last_changed(orm, seed_data):
+    seed_data.add(orm.measurement_sequence(
+        target_id=seed_data.target.id,
+        magazine_id=seed_data.magazine.id,
+        sequence=1,
+    ))
+    orm.commit()
+
+    assert seed_data.magazine.last_changed > MAGAZINE_INIT_DATE
+
+
+def test_update_updates_magazine_last_changed(orm, seed_data):
+    measurement_sequence = seed_data.add(orm.measurement_sequence(
+        target_id=seed_data.target.id,
+        magazine_id=seed_data.magazine.id,
+        sequence=1,
+    ))
+    orm.commit()
+
+    seed_data.magazine.last_changed = MAGAZINE_INIT_DATE
+    orm.commit()
+
+    measurement_sequence.sequence = 2
+    orm.commit()
+
+    assert seed_data.magazine.last_changed > MAGAZINE_INIT_DATE
+
+
+def test_delete_updates_magazine_last_changed(orm, seed_data):
+    measurement_sequence = seed_data.add(orm.measurement_sequence(
+        target_id=seed_data.target.id,
+        magazine_id=seed_data.magazine.id,
+        sequence=1,
+    ))
+    orm.commit()
+
+    seed_data.magazine.last_changed = MAGAZINE_INIT_DATE
+    orm.commit()
+
+    orm.delete(measurement_sequence)
+    orm.commit()
+
+    assert seed_data.magazine.last_changed > MAGAZINE_INIT_DATE
