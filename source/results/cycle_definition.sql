@@ -30,3 +30,14 @@ create table cycle_definition (
     constraint cycle_definition_machine_foreign_key
     foreign key (machine_number) references machine(number)
 ) engine=innodb;
+
+delimiter //
+
+create trigger cycle_definition_prevent_update
+before update on cycle_definition for each row
+begin
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'updating cycle_definition is not allowed';
+end;
+
+//
+delimiter ;

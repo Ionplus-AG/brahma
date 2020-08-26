@@ -77,28 +77,28 @@ delimiter //
 create trigger target_insert_updates_magazine_last_changed
 after insert on target for each row
 begin
- if ( new.magazine_id is not null ) then
-  update magazine set last_changed = current_timestamp where id = new.magazine_id;
- end if;
+    if ( new.magazine_id is not null ) then
+        update magazine set last_changed = current_timestamp where id = new.magazine_id;
+    end if;
 end;
 
 create trigger target_update_updates_magazine_last_changed
 after update on target for each row
 begin
- if ( new.magazine_id is not null ) then
-  update magazine set last_changed = current_timestamp where id = new.magazine_id;
- end if;
- if ( old.magazine_id is not null and old.magazine_id <> new.magazine_id ) then
-  update magazine set last_changed = current_timestamp where id = old.magazine_id;
- end if;
+    if ( new.magazine_id is not null ) then
+        update magazine set last_changed = current_timestamp where id = new.magazine_id;
+    end if;
+    if ( old.magazine_id is not null and old.magazine_id <> new.magazine_id ) then
+        update magazine set last_changed = current_timestamp where id = old.magazine_id;
+    end if;
 end;
 
 create trigger target_delete_updates_magazine_last_changed
 after delete on target for each row
 begin
- if ( old.magazine_id is not null ) then
-  update magazine set last_changed = current_timestamp where id = old.magazine_id;
- end if;
+    if ( old.magazine_id is not null ) then
+        update magazine set last_changed = current_timestamp where id = old.magazine_id;
+    end if;
 end; //
 
 delimiter ;

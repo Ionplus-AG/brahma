@@ -24,22 +24,22 @@ delimiter //
 create trigger measurement_sequence_updates_magazine_last_changed
 after insert on measurement_sequence for each row
 begin
- update magazine set last_changed = current_timestamp where id = new.magazine_id;
+    update magazine set last_changed = current_timestamp where id = new.magazine_id;
 end;
 
 create trigger measurement_sequence_update_updates_magazine_last_changed
 after update on measurement_sequence for each row
 begin
- update magazine set last_changed = current_timestamp where id = new.magazine_id;
- if ( old.magazine_id <> new.magazine_id ) then
-  update magazine set last_changed = current_timestamp where id = old.magazine_id;
- end if;
+    update magazine set last_changed = current_timestamp where id = new.magazine_id;
+    if ( old.magazine_id <> new.magazine_id ) then
+        update magazine set last_changed = current_timestamp where id = old.magazine_id;
+    end if;
 end;
 
 create trigger measurement_sequence_delete_updates_magazine_last_changed
 after delete on measurement_sequence for each row
 begin
- update magazine set last_changed = current_timestamp where id = old.magazine_id;
+    update magazine set last_changed = current_timestamp where id = old.magazine_id;
 end; //
 
 delimiter ;
