@@ -57,6 +57,9 @@ class Orm(object):
     def commit(self):
         return self.__session.commit()
 
+    def rollback(self):
+        return self.__session.rollback()
+
 
 @pytest.fixture(scope='session')
 def orm_engine(request, db_connection):
