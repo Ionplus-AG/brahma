@@ -76,7 +76,7 @@ def orm_engine(request, db_connection):
     user = config.getini('mysql_user')
     passwd = config.getini('mysql_password')
     database_name = config.getini('mysql_database_name')
-    yield sqlalchemy.create_engine(f'mysql://{user}:{passwd}@{host}/{database_name}')
+    yield sqlalchemy.create_engine(f'mysql+mysqlconnector://{user}:{passwd}@{host}/{database_name}')
 
 
 # noinspection PyUnusedLocal
