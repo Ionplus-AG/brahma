@@ -15,7 +15,7 @@ Base = automap_base()
 class Orm(object):
     def __init__(self, base, session):
         self.__base = base
-        self.__session = session
+        self.session = session
 
     @property
     def schema_change(self):
@@ -61,21 +61,29 @@ class Orm(object):
     def cycle_definition(self):
         return self.__base.classes.cycle_definition
 
+    @property
+    def run(self):
+        return self.__base.classes.run
+
+    @property
+    def cycle(self):
+        return self.__base.classes.cycle
+
     def add(self, obj):
-        self.__session.add(obj)
+        self.session.add(obj)
         return obj
 
     def query(self, table):
-        return self.__session.query(table)
+        return self.session.query(table)
 
     def delete(self, obj):
-        self.__session.delete(obj)
+        self.session.delete(obj)
 
     def commit(self):
-        return self.__session.commit()
+        return self.session.commit()
 
     def rollback(self):
-        return self.__session.rollback()
+        return self.session.rollback()
 
 
 @pytest.fixture(scope='session')

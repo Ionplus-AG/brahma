@@ -40,6 +40,7 @@ create trigger measurement_sequence_delete_updates_magazine_last_changed
 after delete on measurement_sequence for each row
 begin
     update magazine set last_changed = current_timestamp where id = old.magazine_id;
-end; //
+end;
 
+//
 delimiter ;

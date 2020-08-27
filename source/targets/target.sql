@@ -99,6 +99,7 @@ begin
     if ( old.magazine_id is not null ) then
         update magazine set last_changed = current_timestamp where id = old.magazine_id;
     end if;
-end; //
+end;
 
+//
 delimiter ;

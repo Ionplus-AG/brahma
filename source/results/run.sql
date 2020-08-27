@@ -11,6 +11,8 @@ create table run (
 
     machine_number int not null,
 
+    spectrum_path tinytext default null,
+
     constraint run_target_foreign_key
     foreign key (target_id) references target(id),
 
