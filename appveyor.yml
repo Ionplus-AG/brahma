@@ -2,11 +2,14 @@ image: Ubuntu
 
 stack: python 3.8
 
+environment:
+  PIPENV_VERBOSITY: -1
+
 services:
   - mysql
 
 install:
-  - pip install pipenv
+  - pip --disable-pip-version-check install pipenv
   - pipenv sync
 
 test_script:

@@ -3,8 +3,7 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
-pytest_plugins = [
-   "test.fixtures.database",
-   "test.fixtures.orm",
-   "test.fixtures.seed_data",
-]
+create table schema_change (
+    version int primary key,
+    date_applied datetime not null
+) engine=innodb;
