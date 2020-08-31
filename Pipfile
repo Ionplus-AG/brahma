@@ -9,3 +9,4 @@ verify_ssl = true
 pytest = "*"
 mysql-connector-python = "*"
 sqlalchemy = "*"
+pytest-benchmark = "*"

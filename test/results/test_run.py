@@ -69,3 +69,30 @@ def test_calculate_run(orm, seed_data):
 
     assert float(run.ratio_a_ana) == approx(0.1)
     assert float(run.ratio_a_ana_sigma) == approx(9.211e-07)
+
+
+def test_performance_of_calculate_run(orm, seed_data, benchmark):
+    cycles = [
+        seed_data.add_cycle(
+            number=i,
+            runtime_micros=1,
+            end_of_cycle=datetime.datetime.utcnow(),
+            disabled=i % 3 == 0,
+            r=1e6,
+            g1=2e6,
+            g2=3e6,
+            ana=1e-5,
+            a=1e-6,
+            b=2e-6,
+            c=3e-6,
+        )
+        for i in range(100)
+    ]
+
+    def calculate_run():
+        orm.session.execute(f'call calculate_run({seed_data.run.id})')
+
+    benchmark(calculate_run)
+
+    orm.commit()
+    assert seed_data.run.total_cycles == len(cycles)
