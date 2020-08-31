@@ -11,7 +11,9 @@ create table cycle (
     cycle_definition_id int not null,
 
     runtime_micros double not null,
-    end_of_cycle datetime(6) not null,
+    end_of_cycle datetime(3) not null,
+
+    disabled bool not null default false,
 
     r int default null,
     g1 int default null,
@@ -21,8 +23,6 @@ create table cycle (
     a double default null,
     b double default null,
     c double default null,
-
-    disabled bool not null default false,
 
     ratio_r_a double default null,
     ratio_r_b double default null,
