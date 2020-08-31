@@ -91,8 +91,8 @@ def test_performance_of_calculate_run(orm, seed_data, benchmark):
 
     def calculate_run():
         orm.session.execute(f'call calculate_run({seed_data.run.id})')
+        orm.commit()
 
     benchmark(calculate_run)
 
-    orm.commit()
     assert seed_data.run.total_cycles == len(cycles)
