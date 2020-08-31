@@ -7,13 +7,13 @@ import pytest
 
 
 def _check_ratios(cycle):
-    result = 0.1602177
-    assert float(cycle.ratio_r_a) == pytest.approx(result)
-    assert float(cycle.ratio_r_b) == pytest.approx(result / 2)
-    assert float(cycle.ratio_g1_a) == pytest.approx(result * 2)
-    assert float(cycle.ratio_g1_b) == pytest.approx(result)
-    assert float(cycle.ratio_g2_a) == pytest.approx(result * 3)
-    assert float(cycle.ratio_g2_b) == pytest.approx(result * 1.5)
+    ratio = 0.1602177
+    assert float(cycle.ratio_r_a) == pytest.approx(ratio)
+    assert float(cycle.ratio_r_b) == pytest.approx(ratio / 2)
+    assert float(cycle.ratio_g1_a) == pytest.approx(ratio * 2)
+    assert float(cycle.ratio_g1_b) == pytest.approx(ratio)
+    assert float(cycle.ratio_g2_a) == pytest.approx(ratio * 3)
+    assert float(cycle.ratio_g2_b) == pytest.approx(ratio * 1.5)
     assert float(cycle.ratio_b_a) == pytest.approx(2)
     assert float(cycle.ratio_a_ana) == pytest.approx(0.1)
 
