@@ -11,7 +11,7 @@ def test_calculate_run(orm, seed_data):
     cycles = [
         seed_data.add_cycle(
             number=i,
-            runtime_micros=1,
+            runtime=1e-6,
             end_of_cycle=datetime.datetime.utcnow(),
             disabled=i % 3 == 0,
             r=1e6,
@@ -32,7 +32,7 @@ def test_calculate_run(orm, seed_data):
     assert run.enabled_cycles == 13
     assert run.total_cycles == 20
 
-    assert run.runtime_micros == approx(13)
+    assert float(run.runtime) == approx(13e-6)
     assert run.end_of_last_cycle == cycles[-1].end_of_cycle
 
     assert run.r == approx(13e6)
@@ -68,14 +68,14 @@ def test_calculate_run(orm, seed_data):
     assert float(run.ratio_b_a_sigma) == approx(0)
 
     assert float(run.ratio_a_ana) == approx(0.1)
-    assert float(run.ratio_a_ana_sigma) == approx(9.211e-07)
+    assert float(run.ratio_a_ana_sigma) == approx(4.023e-07)
 
 
 def test_performance_of_calculate_run(orm, seed_data, benchmark):
     cycles = [
         seed_data.add_cycle(
             number=i,
-            runtime_micros=1,
+            runtime=1e-6,
             end_of_cycle=datetime.datetime.utcnow(),
             disabled=i % 3 == 0,
             r=1e6,

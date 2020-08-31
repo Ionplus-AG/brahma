@@ -28,7 +28,7 @@ def test_ratios_insert(seed_data):
         a=1e-6,
         b=2e-6,
         ana=1e-5,
-        runtime_micros=1,
+        runtime=1e-6,
     )
 
     _check_ratios(cycle)
@@ -37,7 +37,7 @@ def test_ratios_insert(seed_data):
 def test_ratios_update(orm, seed_data):
     cycle = seed_data.add_cycle(
         number=1,
-        runtime_micros=1,
+        runtime=1e-6,
         end_of_cycle=datetime.datetime.utcnow()
     )
 
@@ -58,7 +58,7 @@ def test_ratio_is_none_when_count_is_none(seed_data):
         end_of_cycle=datetime.datetime.utcnow(),
         r=None,
         a=1e-6,
-        runtime_micros=1,
+        runtime=1e-6,
     )
 
     assert cycle.ratio_r_a is None
@@ -70,7 +70,7 @@ def test_ratio_is_none_when_current_is_none(seed_data):
         end_of_cycle=datetime.datetime.utcnow(),
         r=1e6,
         a=None,
-        runtime_micros=1,
+        runtime=1e-6,
     )
 
     assert cycle.ratio_r_a is None
@@ -82,7 +82,7 @@ def test_ratio_is_none_when_runtime_is_zero(seed_data):
         end_of_cycle=datetime.datetime.utcnow(),
         r=1e6,
         a=1e-6,
-        runtime_micros=0,
+        runtime=0,
     )
 
     assert cycle.ratio_r_a is None

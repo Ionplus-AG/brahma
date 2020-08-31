@@ -10,7 +10,7 @@ create table cycle (
     number int not null,
     cycle_definition_id int not null,
 
-    runtime_micros double not null,
+    runtime double not null,
     end_of_cycle datetime(3) not null,
 
     disabled bool not null default false,

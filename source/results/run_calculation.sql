@@ -11,7 +11,7 @@ begin
     declare $enabled_cycles int;
     declare $total_cycles int;
 
-    declare $runtime_micros double;
+    declare $runtime double;
     declare $end_of_last_cycle datetime(3);
 
     declare $r int;
@@ -61,13 +61,13 @@ begin
     calc_data:
     begin
         # calculate sums
-        select if((min(runtime_micros) > 0), sum(runtime_micros), null),
-               if((min(runtime_micros) < 0) || (min(a * runtime_micros) < 0), null, sum(a * runtime_micros)),
+        select if((min(runtime) > 0), sum(runtime), null),
+               if((min(runtime) < 0) || (min(a * runtime) < 0), null, sum(a * runtime)),
                count(*),
                if((min(r) < 0) || (count(r) != count(*)), null, sum(r)),
                if((min(g1) < 0) || (count(g1) != count(*)), null, sum(g1)),
                if((min(g2) < 0) || (count(g2) != count(*)), null, sum(g2))
-        into $runtime_micros, $weight_sum, $enabled_cycles, $r, $g1, $g2
+        into $runtime, $weight_sum, $enabled_cycles, $r, $g1, $g2
         from cycle where run_id = $run_id and disabled is false;
 
         select count(*)
@@ -82,11 +82,11 @@ begin
         limit 1;
 
         # condition runtime != null, runtime > 0, cycles > 0
-        if ($runtime_micros is null) || ($enabled_cycles < 1) then
+        if ($runtime is null) || ($enabled_cycles < 1) then
             set $r = null;
             set $g1 = null;
             set $g2 = null;
-            set $runtime_micros = null;
+            set $runtime = null;
             set $enabled_cycles = null;
             leave calc_data;
         end if;
@@ -95,57 +95,57 @@ begin
         # for the currents, the weight is the runtime,
         # for the ratios the weight is a*runtime.
         # the sum of the weight is calculated some lines above
-        select if(count(ana) != $enabled_cycles, null, sum(ana * runtime_micros) / $runtime_micros),
-               if(count(a) != $enabled_cycles, null, sum(a * runtime_micros) / $runtime_micros),
-               if(count(b) != $enabled_cycles, null, sum(b * runtime_micros) / $runtime_micros),
-               if(count(c) != $enabled_cycles, null, sum(c * runtime_micros) / $runtime_micros)
+        select if(count(ana) != $enabled_cycles, null, sum(ana * runtime) / $runtime),
+               if(count(a) != $enabled_cycles, null, sum(a * runtime) / $runtime),
+               if(count(b) != $enabled_cycles, null, sum(b * runtime) / $runtime),
+               if(count(c) != $enabled_cycles, null, sum(c * runtime) / $runtime)
         into $ana, $a, $b, $c
         from cycle where run_id = $run_id and disabled is false;
 
         select if((min(ratio_r_a) < 0) || (count(ratio_r_a) != $enabled_cycles), null,
-                  sum(ratio_r_a * a * runtime_micros) / $weight_sum),
-               if((min(ratio_r_a) < 0) || (count(ratio_r_a) != $enabled_cycles), null, sum(ratio_r_a * a * runtime_micros)),
+                  sum(ratio_r_a * a * runtime) / $weight_sum),
+               if((min(ratio_r_a) < 0) || (count(ratio_r_a) != $enabled_cycles), null, sum(ratio_r_a * a * runtime)),
                if((min(ratio_r_a) < 0) || (count(ratio_r_a) != $enabled_cycles), null,
-                  sum(ratio_r_a * ratio_r_a * a * runtime_micros))
+                  sum(ratio_r_a * ratio_r_a * a * runtime))
         into $ratio_r_a, $ratio_r_a_sum, $ratio_r_a_sum2
         from cycle where run_id = $run_id and disabled is false;
 
         select if((min(ratio_r_b) < 0) || (count(ratio_r_b) != $enabled_cycles), null,
-                  sum(ratio_r_b * a * runtime_micros) / $weight_sum),
-               if((min(ratio_r_b) < 0) || (count(ratio_r_b) != $enabled_cycles), null, sum(ratio_r_b * a * runtime_micros)),
+                  sum(ratio_r_b * a * runtime) / $weight_sum),
+               if((min(ratio_r_b) < 0) || (count(ratio_r_b) != $enabled_cycles), null, sum(ratio_r_b * a * runtime)),
                if((min(ratio_r_b) < 0) || (count(ratio_r_b) != $enabled_cycles), null,
-                  sum(ratio_r_b * ratio_r_b * a * runtime_micros))
+                  sum(ratio_r_b * ratio_r_b * a * runtime))
         into $ratio_r_b, $ratio_r_b_sum, $ratio_r_b_sum2
         from cycle where run_id = $run_id and disabled is false;
 
         select if((min(ratio_g1_a) < 0) || (count(ratio_g1_a) != $enabled_cycles), null,
-                  sum(ratio_g1_a * a * runtime_micros) / $weight_sum),
+                  sum(ratio_g1_a * a * runtime) / $weight_sum),
                if((min(ratio_g1_b) < 0) || (count(ratio_g1_b) != $enabled_cycles), null,
-                  sum(ratio_g1_b * a * runtime_micros) / $weight_sum)
+                  sum(ratio_g1_b * a * runtime) / $weight_sum)
         into $ratio_g1_a, $ratio_g1_b
         from cycle where run_id = $run_id and disabled is false;
 
         select if((min(ratio_g2_a) < 0) || (count(ratio_g2_a) != $enabled_cycles), null,
-                  sum(ratio_g2_a * a * runtime_micros) / $weight_sum),
+                  sum(ratio_g2_a * a * runtime) / $weight_sum),
                if((min(ratio_g2_b) < 0) || (count(ratio_g2_b) != $enabled_cycles), null,
-                  sum(ratio_g2_b * a * runtime_micros) / $weight_sum)
+                  sum(ratio_g2_b * a * runtime) / $weight_sum)
         into $ratio_g2_a, $ratio_g2_b
         from cycle where run_id = $run_id and disabled is false;
 
         select if((min(ratio_b_a) < 0) || (count(ratio_b_a) != $enabled_cycles), null,
-                  sum(ratio_b_a * a * runtime_micros) / $weight_sum),
-               if((min(ratio_b_a) < 0) || (count(ratio_b_a) != $enabled_cycles), null, sum(ratio_b_a * a * runtime_micros)),
+                  sum(ratio_b_a * a * runtime) / $weight_sum),
+               if((min(ratio_b_a) < 0) || (count(ratio_b_a) != $enabled_cycles), null, sum(ratio_b_a * a * runtime)),
                if((min(ratio_b_a) < 0) || (count(ratio_b_a) != $enabled_cycles), null,
-                  sum(ratio_b_a * ratio_b_a * a * runtime_micros))
+                  sum(ratio_b_a * ratio_b_a * a * runtime))
         into $ratio_b_a, $ratio_b_a_sum, $ratio_b_a_sum2
         from cycle where run_id = $run_id and disabled is false;
 
         select if((min(ratio_a_ana) < 0) || (count(ratio_a_ana) != $enabled_cycles), null,
-                  sum(ratio_a_ana * a * runtime_micros) / $weight_sum),
+                  sum(ratio_a_ana * a * runtime) / $weight_sum),
                if((min(ratio_a_ana) < 0) || (count(ratio_a_ana) != $enabled_cycles), null,
-                  sum(ratio_a_ana * a * runtime_micros)),
+                  sum(ratio_a_ana * a * runtime)),
                if((min(ratio_a_ana) < 0) || (count(ratio_a_ana) != $enabled_cycles), null,
-                  sum(ratio_a_ana * ratio_a_ana * a * runtime_micros))
+                  sum(ratio_a_ana * ratio_a_ana * a * runtime))
         into $ratio_a_ana, $ratio_a_ana_sum, $ratio_a_ana_sum2
         from cycle where run_id = $run_id and disabled is false;
 
@@ -212,7 +212,7 @@ begin
         update run
         set enabled_cycles = $enabled_cycles,
             total_cycles = $total_cycles,
-            runtime_micros = $runtime_micros,
+            runtime = $runtime,
             end_of_last_cycle = $end_of_last_cycle,
             r = $r,
             r_delta = $r_delta,

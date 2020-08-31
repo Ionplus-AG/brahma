@@ -18,7 +18,7 @@ create table run (
     enabled_cycles int default 0,
     total_cycles int default 0,
 
-    runtime_micros double default 0,
+    runtime double default 0,
     end_of_last_cycle datetime(3) default null,
 
     r int default null,
