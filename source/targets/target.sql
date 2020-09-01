@@ -52,6 +52,45 @@ create table target (
 
     carrier double default null,
 
+    active_runs int not null default 0,
+    total_runs int not null default 0,
+
+    runtime double not null default 0,
+
+    r int default null,
+    r_delta double default null,
+
+    g1 int default null,
+    g1_delta double default null,
+
+    g2 int default null,
+    g2_delta double default null,
+
+    ana double default null,
+    a double default null,
+    b double default null,
+    c double default null,
+
+    ratio_r_a double default null,
+    ratio_r_a_sigma double default null,
+    ratio_r_a_delta double default null,
+
+    ratio_r_b double default null,
+    ratio_r_b_sigma double default null,
+    ratio_r_b_delta double default null,
+
+    ratio_g1_a double default null,
+    ratio_g1_b double default null,
+    ratio_g2_a double default null,
+    ratio_g2_b double default null,
+
+    ratio_b_a double default null,
+    ratio_b_a_sigma double default null,
+    ratio_b_a_delta double default null,
+
+    ratio_a_ana double default null,
+    ratio_a_ana_sigma double default null,
+
     constraint target_numbers_unique
     unique (isotope_number, sample_number, preparation_number, number),
 

@@ -23,6 +23,7 @@ source targets/preparation.sql;
 source targets/magazine.sql;
 source targets/target.sql;
 source targets/measurement_sequence.sql;
+source targets/target_calculation.sql;
 
 source results/machine.sql;
 source results/cycle_definition.sql;

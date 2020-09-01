@@ -28,11 +28,7 @@ class SeedData(object):
             machine_number=self.machine.number,
             sequence=0
         ))
-        self.run = self.add(orm.run(
-            target_id=self.target.id,
-            machine_number=self.machine.number,
-            number=1,
-        ))
+        self.run = self.add_run(number=1000)
 
     def add_sample(self, project=None, **kwargs):
         if not project:
@@ -61,7 +57,20 @@ class SeedData(object):
             isotope_number=preparation.isotope_number,
             sample_number=preparation.sample_number,
             preparation_number=preparation.number,
-            **kwargs
+            **kwargs,
+        ))
+
+    def add_run(self, target=None, machine=None, **kwargs):
+        if not target:
+            target = self.target
+
+        if not machine:
+            machine = self.machine
+
+        return self.add(self.__orm.run(
+            target_id=target.id,
+            machine_number=machine.number,
+            **kwargs,
         ))
 
     def add_cycle(self, run=None, cycle_definition=None, **kwargs):
@@ -74,7 +83,7 @@ class SeedData(object):
         return self.add(self.__orm.cycle(
             run_id=run.id,
             cycle_definition_id=cycle_definition.id,
-            **kwargs
+            **kwargs,
         ))
 
     def add(self, obj):

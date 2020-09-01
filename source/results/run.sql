@@ -19,8 +19,9 @@ create table run (
     total_cycles int not null default 0,
 
     runtime double not null default 0,
-    valid bool generated always as (runtime > 0) virtual,
     end_of_last_cycle datetime(3) default null,
+
+    active bool generated always as (runtime > 0 && disabled is false) virtual,
 
     r int default null,
     r_delta double default null,

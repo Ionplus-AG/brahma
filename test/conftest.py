@@ -6,5 +6,6 @@
 pytest_plugins = [
    "test.fixtures.database",
    "test.fixtures.orm",
+   "test.fixtures.real_data",
    "test.fixtures.seed_data",
 ]
