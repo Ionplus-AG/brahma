@@ -103,10 +103,18 @@ def _no_relationship(*args, **kw):
 
 @pytest.fixture(scope='session')
 def orm_base(orm_engine):
-    base = automap_base()
+    metadata = sqlalchemy.MetaData()
+    metadata.reflect(orm_engine)
+
+    # map all double columns to float
+    for table in metadata.tables.values():
+        for column in table.columns.values():
+            if isinstance(column.type, sqlalchemy.Numeric):
+                column.type.asdecimal = False
+
+    base = automap_base(metadata=metadata)
     base.prepare(
         orm_engine,
-        reflect=True,
         generate_relationship=_no_relationship
     )
     yield base

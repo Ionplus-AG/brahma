@@ -5,15 +5,16 @@
 
 delimiter //
 
-create function count_by_current(count int, current double, runtime double, electrical_charge double)
+create function count_by_current(count int, current_micro double, runtime double, electrical_charge double)
 returns double deterministic
 begin
     declare elementary_charge double default 1.60217662e-19;
     declare result double default null;
 
-    if count >= 0 && current > 0 && runtime > 0 && electrical_charge <> 0
+    if count >= 0 && current_micro > 0 && runtime > 0 && electrical_charge <> 0
     then
-        set result = (count * electrical_charge * elementary_charge) / (current * runtime);
+        # factor 1e6 as the current is in microampere
+        set result = (count * 1e6 * electrical_charge * elementary_charge) / (current_micro * runtime);
     end if;
 
     return result;
