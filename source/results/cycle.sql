@@ -11,6 +11,7 @@ create table cycle (
     cycle_definition_id int not null,
 
     runtime double not null,
+    valid bool generated always as (runtime > 0) virtual,
     end_of_cycle datetime(3) not null,
 
     disabled bool not null default false,

@@ -15,10 +15,11 @@ create table run (
     disabled bool not null default false,
     comment text default null,
 
-    enabled_cycles int default 0,
-    total_cycles int default 0,
+    enabled_cycles int not null default 0,
+    total_cycles int not null default 0,
 
-    runtime double default 0,
+    runtime double not null default 0,
+    valid bool generated always as (runtime > 0) virtual,
     end_of_last_cycle datetime(3) default null,
 
     r int default null,
