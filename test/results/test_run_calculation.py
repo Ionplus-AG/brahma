@@ -7,9 +7,10 @@ import datetime
 from pytest import approx
 
 
-def some_cycles(seed_data, number_of_cycles=20):
-    return [
+def some_cycles(orm, seed_data, number_of_cycles=20):
+    cycles = [
         seed_data.add_cycle(
+            commit=False,
             number=i,
             runtime=1,
             end_of_cycle=datetime.datetime.utcnow(),
@@ -24,10 +25,12 @@ def some_cycles(seed_data, number_of_cycles=20):
         )
         for i in range(number_of_cycles)
     ]
+    orm.commit()
+    return cycles
 
 
 def test_calculate_run(orm, seed_data):
-    cycles = some_cycles(seed_data)
+    cycles = some_cycles(orm, seed_data)
 
     orm.session.execute(f'call calculate_run({seed_data.run.id})')
     orm.commit()
@@ -123,22 +126,7 @@ def test_calculate_run_real_data(orm, seed_data, real_run):
 
 
 def test_performance_of_calculate_run(orm, seed_data, benchmark):
-    cycles = [
-        seed_data.add_cycle(
-            number=i,
-            runtime=1e-6,
-            end_of_cycle=datetime.datetime.utcnow(),
-            disabled=i % 3 == 0,
-            r=1e6,
-            g1=2e6,
-            g2=3e6,
-            ana=1e-5,
-            a=1e-6,
-            b=2e-6,
-            c=3e-6,
-        )
-        for i in range(100)
-    ]
+    cycles = some_cycles(orm, seed_data, 100)
 
     def calculate_run():
         orm.session.execute(f'call calculate_run({seed_data.run.id})')
@@ -148,9 +136,12 @@ def test_performance_of_calculate_run(orm, seed_data, benchmark):
 
     assert seed_data.run.total_cycles == len(cycles)
 
+    for cycle in cycles:
+        seed_data.delete(cycle)
+
 
 def test_set_cycle_enabled(orm, seed_data):
-    cycles = some_cycles(seed_data)
+    cycles = some_cycles(orm, seed_data)
     cycle = cycles[-1]
 
     orm.session.execute(f'call set_cycle_enabled({cycle.id}, false)')
