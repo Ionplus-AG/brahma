@@ -50,20 +50,31 @@ def _run_sql_script(script_path, config, database_name):
     os.chdir(old_cwd)
 
 
-def _prepare_database(config, database_name, script_path):
-    connection = mysql.connector.connect(
+def _create_session(config):
+    return mysql.connector.connect(
         host=config.getini('mysql_host'),
         user=config.getini('mysql_user'),
         passwd=config.getini('mysql_password'))
 
-    with connection.cursor() as cursor:
+
+def _prepare_database(config, database_name, script_path):
+    session = _create_session(config)
+
+    with session.cursor() as cursor:
         cursor.execute(f'drop database if exists {database_name}')
         cursor.execute(f'create database {database_name} character set utf8mb4 collate utf8mb4_unicode_ci')
 
     _run_sql_script(script_path, config, database_name)
 
-    connection.database = database_name
-    connection.close()
+    session.database = database_name
+    session.close()
+
+
+@pytest.fixture(scope='session')
+def db_session(request):
+    session = _create_session(request.config)
+    yield session
+    session.close()
 
 
 @pytest.fixture(scope='session')
