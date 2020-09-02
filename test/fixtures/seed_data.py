@@ -73,7 +73,7 @@ class SeedData(object):
             **kwargs,
         ))
 
-    def add_cycle(self, run=None, cycle_definition=None, **kwargs):
+    def add_cycle(self, commit=True, run=None, cycle_definition=None, **kwargs):
         if not run:
             run = self.run
 
@@ -84,13 +84,20 @@ class SeedData(object):
             run_id=run.id,
             cycle_definition_id=cycle_definition.id,
             **kwargs,
-        ))
+        ), commit)
 
-    def add(self, obj):
+    def add(self, obj, commit=True):
         self.__orm.add(obj)
-        self.__orm.commit()
+        if commit:
+            self.__orm.commit()
         self.__objects.append(obj)
         return obj
+
+    def delete(self, obj, commit=True):
+        self.__orm.delete(obj)
+        if commit:
+            self.__orm.commit()
+        self.__objects.remove(obj)
 
     def cleanup(self):
         while self.__objects:

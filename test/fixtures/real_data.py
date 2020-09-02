@@ -11,6 +11,7 @@ from itertools import groupby
 
 def create_cycle(seed_data, run, data):
     return seed_data.add_cycle(
+        commit=False,
         run=run,
         number=data[1],
         runtime=data[2],
@@ -26,22 +27,33 @@ def create_cycle(seed_data, run, data):
 
 
 @pytest.fixture(scope='function')
-def real_run(seed_data):
-    yield [
+def real_run(orm, seed_data):
+    cycles = [
         create_cycle(seed_data, seed_data.run, d)
         for d in _data
         if d[0] == 20
     ]
 
+    orm.commit()
+
+    yield cycles
+
+    for cycle in cycles:
+        seed_data.delete(cycle, commit=False)
+    orm.commit()
+
 
 @pytest.fixture(scope='function')
 def real_target(orm, seed_data):
     runs = []
+    cycles = []
     for run_number, run_data in groupby(_data, itemgetter(0)):
         run = seed_data.add_run(number=run_number)
 
-        for data in run_data:
-            create_cycle(seed_data, run, data)
+        cycles.extend(
+            (create_cycle(seed_data, run, data) for data in run_data)
+        )
+        orm.commit()
 
         orm.session.execute(f'call calculate_run({run.id})')
         orm.commit()
@@ -49,6 +61,14 @@ def real_target(orm, seed_data):
         runs.append(run)
 
     yield runs
+
+    for cycle in cycles:
+        seed_data.delete(cycle, commit=False)
+    orm.commit()
+
+    for run in runs:
+        seed_data.delete(run, commit=False)
+    orm.commit()
 
 
 _data = (
