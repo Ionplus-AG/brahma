@@ -14,7 +14,7 @@ class SeedData(object):
         self.customer = self.add(orm.customer(last_name='test_customer'))
         self.project = self.add(orm.project(
             name='test_project',
-            correspondence_customer_number=self.customer.number,
+            customer_number=self.customer.number,
             invoice_customer_number=self.customer.number,
         ))
         self.sample = self.add_sample(isotope_number=3, number=42)

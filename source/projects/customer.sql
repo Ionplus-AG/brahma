@@ -22,7 +22,7 @@ create table customer (
     account varchar(40),
     is_invoice bool default true, # TODO, ewc 2020-07-31: default false? not null?
     is_correspondence bool default true, # TODO, ewc 2020-07-31: default false? not null?
-    user_comment text,
+    comment text,
     language varchar(2),
     title varchar(20),
     salutation varchar(10)
