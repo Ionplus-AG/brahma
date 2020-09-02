@@ -153,12 +153,12 @@ def test_set_cycle_enabled(orm, seed_data):
     cycles = some_cycles(seed_data)
     cycle = cycles[-1]
 
-    orm.session.execute(f'call set_cycle_enabled({seed_data.run.id}, {cycle.id}, false)')
+    orm.session.execute(f'call set_cycle_enabled({cycle.id}, false)')
     orm.commit()
 
     assert bool(cycle.disabled) is True
 
-    orm.session.execute(f'call set_cycle_enabled({seed_data.run.id}, {cycle.id}, true)')
+    orm.session.execute(f'call set_cycle_enabled({cycle.id}, true)')
     orm.commit()
 
     assert bool(cycle.disabled) is False

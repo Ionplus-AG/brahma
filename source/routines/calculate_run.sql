@@ -5,13 +5,19 @@
 
 delimiter //
 
-create procedure calculate_target($target_id int)
-main:
+# summary:
+# Calculates the sums and errors of all enabled cycles of the specified run.
+#
+# params:
+# - $run_id: The identifier of the run.
+create procedure calculate_run($run_id int)
 begin
-    declare $active_runs int default 0;
-    declare $total_runs int default 0;
+    declare $enabled_cycles int default 0;
+    declare $valid_enabled_cycles int default 0;
+    declare $total_cycles int default 0;
 
     declare $runtime double default 0;
+    declare $end_of_last_cycle datetime(3);
 
     declare $r int;
     declare $r_delta double;
@@ -61,71 +67,82 @@ begin
     begin
         # check if there is something to do
         select count(*)
-        into $active_runs
-        from run where target_id = $target_id and active is true;
+        into $enabled_cycles
+        from cycle where run_id = $run_id and disabled is false;
 
-        if $active_runs < 1 then
+        select count(*)
+        into $valid_enabled_cycles
+        from cycle where run_id = $run_id and disabled is false and valid is true;
+
+        if $enabled_cycles < 1 || $enabled_cycles != $valid_enabled_cycles then
             leave calculate;
         end if;
 
         # calculate the sums
         select sum(runtime),
-               if(count(a) = $active_runs, sum(a * runtime), null),
-               if(count(r) = $active_runs, sum(r), null),
-               if(count(g1) = $active_runs, sum(g1), null),
-               if(count(g2) = $active_runs, sum(g2), null)
+               if(count(a) = $enabled_cycles, sum(a * runtime), null),
+               if(count(r) = $enabled_cycles, sum(r), null),
+               if(count(g1) = $enabled_cycles, sum(g1), null),
+               if(count(g2) = $enabled_cycles, sum(g2), null)
         into $runtime, $weight_sum, $r, $g1, $g2
-        from run where target_id = $target_id and disabled is false;
+        from cycle where run_id = $run_id and disabled is false;
 
         select count(*)
-        into $total_runs
-        from run where target_id = $target_id;
+        into $total_cycles
+        from cycle where run_id = $run_id;
+
+        select end_of_cycle
+        into $end_of_last_cycle
+        from cycle
+        where run_id = $run_id and disabled is false
+        order by end_of_cycle desc
+        limit 1;
 
         # calculate the means
         # for the currents, the weight is the runtime,
         # for the ratios the weight is a*runtime (aka weight_sum).
         set $a = $weight_sum / $runtime;
-        select if(count(ana) = $active_runs, sum(ana * runtime) / $runtime, null),
-               if(count(b) = $active_runs, sum(b * runtime) / $runtime, null),
-               if(count(c) = $active_runs, sum(c * runtime) / $runtime, null)
+        select if(count(ana) = $enabled_cycles, sum(ana * runtime) / $runtime, null),
+               if(count(b) = $enabled_cycles, sum(b * runtime) / $runtime, null),
+               if(count(c) = $enabled_cycles, sum(c * runtime) / $runtime, null)
         into $ana, $b, $c
-        from run where target_id = $target_id and disabled is false;
+        from cycle where run_id = $run_id and disabled is false;
 
         if $weight_sum > 0 then
 
-            select if(count(ratio_r_a) = $active_runs, sum(ratio_r_a * a * runtime) / $weight_sum, null),
-                   if(count(ratio_r_a) = $active_runs, sum(ratio_r_a * a * runtime), null),
-                   if(count(ratio_r_a) = $active_runs, sum(ratio_r_a * ratio_r_a * a * runtime), null)
+            select if(count(ratio_r_a) = $enabled_cycles, sum(ratio_r_a * a * runtime) / $weight_sum, null),
+                   if(count(ratio_r_a) = $enabled_cycles, sum(ratio_r_a * a * runtime), null),
+                   if(count(ratio_r_a) = $enabled_cycles, sum(ratio_r_a * ratio_r_a * a * runtime), null)
             into $ratio_r_a, $ratio_r_a_sum, $ratio_r_a_sum2
-            from run where target_id = $target_id and disabled is false;
+            from cycle where run_id = $run_id and disabled is false;
 
-            select if(count(ratio_r_b) = $active_runs, sum(ratio_r_b * a * runtime) / $weight_sum, null),
-                   if(count(ratio_r_b) = $active_runs, sum(ratio_r_b * a * runtime), null),
-                   if(count(ratio_r_b) = $active_runs, sum(ratio_r_b * ratio_r_b * a * runtime), null)
+            select if(count(ratio_r_b) = $enabled_cycles, sum(ratio_r_b * a * runtime) / $weight_sum, null),
+                   if(count(ratio_r_b) = $enabled_cycles, sum(ratio_r_b * a * runtime), null),
+                   if(count(ratio_r_b) = $enabled_cycles, sum(ratio_r_b * ratio_r_b * a * runtime), null)
             into $ratio_r_b, $ratio_r_b_sum, $ratio_r_b_sum2
-            from run where target_id = $target_id and disabled is false;
+            from cycle where run_id = $run_id and disabled is false;
 
-            select if(count(ratio_g1_a) = $active_runs, sum(ratio_g1_a * a * runtime) / $weight_sum, null),
-                   if(count(ratio_g1_b) = $active_runs, sum(ratio_g1_b * a * runtime) / $weight_sum, null)
+            select if(count(ratio_g1_a) = $enabled_cycles, sum(ratio_g1_a * a * runtime) / $weight_sum, null),
+                   if(count(ratio_g1_b) = $enabled_cycles, sum(ratio_g1_b * a * runtime) / $weight_sum, null)
             into $ratio_g1_a, $ratio_g1_b
-            from run where target_id = $target_id and disabled is false;
+            from cycle where run_id = $run_id and disabled is false;
 
-            select if(count(ratio_g2_a) = $active_runs, sum(ratio_g2_a * a * runtime) / $weight_sum, null),
-                   if(count(ratio_g2_b) = $active_runs, sum(ratio_g2_b * a * runtime) / $weight_sum, null)
+            select if(count(ratio_g2_a) = $enabled_cycles, sum(ratio_g2_a * a * runtime) / $weight_sum, null),
+                   if(count(ratio_g2_b) = $enabled_cycles, sum(ratio_g2_b * a * runtime) / $weight_sum, null)
             into $ratio_g2_a, $ratio_g2_b
-            from run where target_id = $target_id and disabled is false;
+            from cycle where run_id = $run_id and disabled is false;
 
-            select if(count(ratio_b_a) = $active_runs, sum(ratio_b_a * a * runtime) / $weight_sum, null),
-                   if(count(ratio_b_a) = $active_runs, sum(ratio_b_a * a * runtime), null),
-                   if(count(ratio_b_a) = $active_runs, sum(ratio_b_a * ratio_b_a * a * runtime), null)
+            select if(count(ratio_b_a) = $enabled_cycles, sum(ratio_b_a * a * runtime) / $weight_sum, null),
+                   if(count(ratio_b_a) = $enabled_cycles, sum(ratio_b_a * a * runtime), null),
+                   if(count(ratio_b_a) = $enabled_cycles, sum(ratio_b_a * ratio_b_a * a * runtime), null)
             into $ratio_b_a, $ratio_b_a_sum, $ratio_b_a_sum2
-            from run where target_id = $target_id and disabled is false;
+            from cycle where run_id = $run_id and disabled is false;
 
-            select if(count(ratio_a_ana) = $active_runs, sum(ratio_a_ana * a * runtime) / $weight_sum, null),
-                   if(count(ratio_a_ana) = $active_runs, sum(ratio_a_ana * a * runtime), null),
-                   if(count(ratio_a_ana) = $active_runs, sum(ratio_a_ana * ratio_a_ana * a * runtime), null)
+            select if(count(ratio_a_ana) = $enabled_cycles, sum(ratio_a_ana * a * runtime) / $weight_sum, null),
+                   if(count(ratio_a_ana) = $enabled_cycles, sum(ratio_a_ana * a * runtime), null),
+                   if(count(ratio_a_ana) = $enabled_cycles, sum(ratio_a_ana * ratio_a_ana * a * runtime), null)
             into $ratio_a_ana, $ratio_a_ana_sum, $ratio_a_ana_sum2
-            from run where target_id = $target_id and disabled is false;
+            from cycle where run_id = $run_id and disabled is false;
 
             # calculate the errors
             if $r > 0 then
@@ -156,44 +173,45 @@ begin
                    if($r >= 0 && $ratio_r_b > 0, pow(sum(r / (ratio_r_b * ratio_r_b)), -0.5) / $ratio_r_b, null),
                    if($ratio_b_a > 0, pow(sum(1 / (ratio_b_a * ratio_b_a)), -0.5) / $ratio_b_a, null)
             into $ratio_r_a_delta, $ratio_r_b_delta, $ratio_b_a_delta
-            from run where target_id = $target_id and disabled is false;
+            from cycle where run_id = $run_id and disabled is false;
 
             # calculate the sigmas, but only of there are at least 2 cycles
-            if $active_runs >= 2 then
+            if $enabled_cycles >= 2 then
 
                 if $ratio_r_a > 0 then
                     set $ratio_r_a_sigma = sqrt(
-                            ($ratio_r_a_sum2 - (pow($ratio_r_a_sum, 2) / $weight_sum)) / ($weight_sum * ($active_runs - 1))
+                            ($ratio_r_a_sum2 - (pow($ratio_r_a_sum, 2) / $weight_sum)) / ($weight_sum * ($enabled_cycles - 1))
                         ) / $ratio_r_a * 100;
                 end if;
 
                 if $ratio_r_b > 0 then
                     set $ratio_r_b_sigma = sqrt(
-                            ($ratio_r_b_sum2 - (pow($ratio_r_b_sum, 2) / $weight_sum)) / ($weight_sum * ($active_runs - 1))
+                            ($ratio_r_b_sum2 - (pow($ratio_r_b_sum, 2) / $weight_sum)) / ($weight_sum * ($enabled_cycles - 1))
                         ) / $ratio_r_b * 100;
                 end if;
 
                 if $ratio_b_a > 0 then
                     set $ratio_b_a_sigma = sqrt(
-                        ($ratio_b_a_sum2 - (pow($ratio_b_a_sum, 2) / $weight_sum)) / ($weight_sum * ($active_runs - 1))
+                        ($ratio_b_a_sum2 - (pow($ratio_b_a_sum, 2) / $weight_sum)) / ($weight_sum * ($enabled_cycles - 1))
                     ) / $ratio_b_a * 100;
                 end if;
 
                 if $ratio_a_ana > 0 then
                     set $ratio_a_ana_sigma = sqrt(
-                        ($ratio_a_ana_sum2 - (pow($ratio_a_ana_sum, 2) / $weight_sum)) / ($weight_sum * ($active_runs - 1))
+                        ($ratio_a_ana_sum2 - (pow($ratio_a_ana_sum, 2) / $weight_sum)) / ($weight_sum * ($enabled_cycles - 1))
                     ) / $ratio_a_ana * 100;
                 end if;
 
-            end if; -- $enabled_runs >= 2
+            end if; -- $enabled_cycles >= 2
 
         end if; -- $weight_sum > 0
     end; -- calculate
 
-    update target
-    set active_runs = $active_runs,
-        total_runs = $total_runs,
+    update run
+    set enabled_cycles = $enabled_cycles,
+        total_cycles = $total_cycles,
         runtime = $runtime,
+        end_of_last_cycle = $end_of_last_cycle,
         r = $r,
         r_delta = $r_delta,
         g1 = $g1,
@@ -219,8 +237,9 @@ begin
         ratio_b_a_sigma = $ratio_b_a_sigma,
         ratio_a_ana = $ratio_a_ana,
         ratio_a_ana_sigma = $ratio_a_ana_sigma
-    where id = $target_id;
-end -- main
+    where id = $run_id;
+
+end;
 
 //
 delimiter ;

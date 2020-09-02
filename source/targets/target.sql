@@ -113,6 +113,8 @@ create table target (
 
 delimiter //
 
+# summary:
+# Triggers updating the associated magazines of the inserted, updated or deleted targets.
 create trigger target_insert_updates_magazine_last_changed
 after insert on target for each row
 begin

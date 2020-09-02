@@ -23,16 +23,21 @@ source targets/preparation.sql;
 source targets/magazine.sql;
 source targets/target.sql;
 source targets/measurement_sequence.sql;
-source targets/target_calculation.sql;
 
 source results/machine.sql;
 source results/cycle_definition.sql;
 source results/run.sql;
 source results/cycle.sql;
-source results/run_calculation.sql;
-source results/cycle_calculation.sql;
 
 source misc/schema_change.sql;
 source misc/config_variable.sql;
+
+source routines/safe_ratio.sql;
+source routines/count_by_current_ratio.sql;
+source routines/calculate_cycle_ratios.sql;
+source routines/calculate_run.sql;
+source routines/calculate_target.sql;
+source routines/update_run.sql;
+source routines/set_cycle_enabled.sql;
 
 insert into schema_change (version, date_applied) values (1, NOW());
