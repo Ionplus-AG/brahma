@@ -88,8 +88,8 @@ create table target (
     ratio_b_a_sigma double default null,
     ratio_b_a_delta double default null,
 
-    ratio_a_ana double default null,
-    ratio_a_ana_sigma double default null,
+    transmission double default null, # ratio a/ana in %
+    transmission_sigma double default null,
 
     constraint target_numbers_unique
     unique (isotope_number, sample_number, preparation_number, number),

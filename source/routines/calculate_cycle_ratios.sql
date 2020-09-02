@@ -22,7 +22,7 @@ begin
     set new.ratio_g2_a = count_by_current_ratio(new.g2, new.a, new.runtime, $charge);
     set new.ratio_g2_b = count_by_current_ratio(new.g2, new.b, new.runtime, $charge);
     set new.ratio_b_a = safe_ratio(new.b, new.a);
-    set new.ratio_a_ana = safe_ratio(new.a, new.ana * $charge);
+    set new.transmission = safe_ratio(new.a * 100, new.ana * $charge);
 end;
 
 create trigger calculate_cycle_ratios_on_update
@@ -40,7 +40,7 @@ begin
     set new.ratio_g2_a = count_by_current_ratio(new.g2, new.a, new.runtime, $charge);
     set new.ratio_g2_b = count_by_current_ratio(new.g2, new.b, new.runtime, $charge);
     set new.ratio_b_a = safe_ratio(new.b, new.a);
-    set new.ratio_a_ana = safe_ratio(new.a, new.ana * $charge);
+    set new.transmission = safe_ratio(new.a * 100, new.ana * $charge);
 end;
 
 //

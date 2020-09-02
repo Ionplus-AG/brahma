@@ -54,10 +54,10 @@ begin
     declare $ratio_b_a_delta double;
     declare $ratio_b_a_sigma double;
 
-    declare $ratio_a_ana double;
-    declare $ratio_a_ana_sum double;
-    declare $ratio_a_ana_sum2 double;
-    declare $ratio_a_ana_sigma double;
+    declare $transmission double;
+    declare $transmission_sum double;
+    declare $transmission_sum2 double;
+    declare $transmission_sigma double;
 
     declare $weight_sum double;
 
@@ -125,10 +125,10 @@ begin
             into $ratio_b_a, $ratio_b_a_sum, $ratio_b_a_sum2
             from run where target_id = $target_id and disabled is false;
 
-            select if(count(ratio_a_ana) = $active_runs, sum(ratio_a_ana * a * runtime) / $weight_sum, null),
-                   if(count(ratio_a_ana) = $active_runs, sum(ratio_a_ana * a * runtime), null),
-                   if(count(ratio_a_ana) = $active_runs, sum(ratio_a_ana * ratio_a_ana * a * runtime), null)
-            into $ratio_a_ana, $ratio_a_ana_sum, $ratio_a_ana_sum2
+            select if(count(transmission) = $active_runs, sum(transmission * a * runtime) / $weight_sum, null),
+                   if(count(transmission) = $active_runs, sum(transmission * a * runtime), null),
+                   if(count(transmission) = $active_runs, sum(transmission * transmission * a * runtime), null)
+            into $transmission, $transmission_sum, $transmission_sum2
             from run where target_id = $target_id and disabled is false;
 
             # calculate the errors
@@ -183,10 +183,10 @@ begin
                     ) / $ratio_b_a * 100;
                 end if;
 
-                if $ratio_a_ana > 0 then
-                    set $ratio_a_ana_sigma = sqrt(
-                        ($ratio_a_ana_sum2 - (pow($ratio_a_ana_sum, 2) / $weight_sum)) / ($weight_sum * ($active_runs - 1))
-                    ) / $ratio_a_ana * 100;
+                if $transmission > 0 then
+                    set $transmission_sigma = sqrt(
+                        ($transmission_sum2 - (pow($transmission_sum, 2) / $weight_sum)) / ($weight_sum * ($active_runs - 1))
+                    ) / $transmission * 100;
                 end if;
 
             end if; -- $enabled_runs >= 2
@@ -221,8 +221,8 @@ begin
         ratio_b_a = $ratio_b_a,
         ratio_b_a_delta = $ratio_b_a_delta,
         ratio_b_a_sigma = $ratio_b_a_sigma,
-        ratio_a_ana = $ratio_a_ana,
-        ratio_a_ana_sigma = $ratio_a_ana_sigma
+        transmission = $transmission,
+        transmission_sigma = $transmission_sigma
     where id = $target_id;
 end;
 

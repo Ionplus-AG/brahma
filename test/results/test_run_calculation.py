@@ -71,8 +71,8 @@ def test_calculate_run(orm, seed_data):
     assert run.ratio_b_a_delta == approx(0.2773500981)
     assert run.ratio_b_a_sigma == approx(0)
 
-    assert run.ratio_a_ana == approx(0.1)
-    assert run.ratio_a_ana_sigma == approx(9.210810886394641e-07)
+    assert run.transmission == approx(10)
+    assert run.transmission_sigma == approx(7.456548223508857e-07)
 
 
 def test_calculate_run_real_data(orm, seed_data, real_run):
@@ -118,8 +118,8 @@ def test_calculate_run_real_data(orm, seed_data, real_run):
     assert run.ratio_b_a_delta == approx(0.25820184137625185)
     assert run.ratio_b_a_sigma == approx(0.017751250350184516)
 
-    assert run.ratio_a_ana == approx(0.4733681824521881)
-    assert run.ratio_a_ana_sigma == approx(0.018798174967380087)
+    assert run.transmission == approx(47.33681824521881)
+    assert run.transmission_sigma == approx(0.018798174967380087)
 
 
 def test_performance_of_calculate_run(orm, seed_data, benchmark):

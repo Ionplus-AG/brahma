@@ -15,7 +15,7 @@ def _check_ratios(cycle):
     assert cycle.ratio_g2_a == pytest.approx(ratio * 3)
     assert cycle.ratio_g2_b == pytest.approx(ratio * 1.5)
     assert cycle.ratio_b_a == pytest.approx(2)
-    assert cycle.ratio_a_ana == pytest.approx(0.1)
+    assert cycle.transmission == pytest.approx(10)
 
 
 def test_ratios_insert(seed_data):
@@ -73,7 +73,7 @@ def test_ratios_of_real_data(seed_data):
     assert cycle.ratio_g2_a == pytest.approx(cycle.ratio_r_a / 3)
     assert cycle.ratio_g2_b == pytest.approx(cycle.ratio_r_b / 3)
     assert cycle.ratio_b_a == pytest.approx(0.01071899514356847)
-    assert cycle.ratio_a_ana == pytest.approx(0.4722416150872538)
+    assert cycle.transmission == pytest.approx(47.22416150872538)
 
 
 def test_ratio_is_none_when_count_is_none(seed_data):

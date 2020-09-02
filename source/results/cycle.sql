@@ -32,7 +32,7 @@ create table cycle (
     ratio_g2_a double default null,
     ratio_g2_b double default null,
     ratio_b_a double default null,
-    ratio_a_ana double default null,
+    transmission double default null, # ratio a/ana in %
 
     constraint cycle_run_foreign_key
     foreign key (run_id) references run(id),

@@ -46,8 +46,8 @@ def test_calculate_target_real_data(orm, seed_data, real_target):
     assert target.ratio_b_a_delta == approx(0.21319172202223693)
     assert target.ratio_b_a_sigma == approx(0.10963614299742935)
 
-    assert target.ratio_a_ana == approx(0.4667942370495189)
-    assert target.ratio_a_ana_sigma == approx(0.23133451244057593)
+    assert target.transmission == approx(46.67942370495189)
+    assert target.transmission_sigma == approx(0.23133451244057593)
 
 
 def test_performance_of_calculate_target(orm, seed_data, real_target, benchmark):
