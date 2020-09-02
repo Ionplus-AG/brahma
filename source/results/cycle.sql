@@ -10,7 +10,7 @@ create table cycle (
     number int not null,
     cycle_definition_id int not null,
 
-    runtime double not null,
+    runtime double not null, # time in seconds
     valid bool generated always as (runtime > 0) virtual,
     end_of_cycle datetime(3) not null,
 
@@ -20,10 +20,10 @@ create table cycle (
     g1 int default null,
     g2 int default null,
 
-    ana double default null,
-    a double default null,
-    b double default null,
-    c double default null,
+    ana double default null, # current in µA
+    a double default null, # current in µA
+    b double default null, # current in µA
+    c double default null, # current in µA
 
     ratio_r_a double default null,
     ratio_r_b double default null,

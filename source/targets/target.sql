@@ -55,7 +55,7 @@ create table target (
     active_runs int not null default 0,
     total_runs int not null default 0,
 
-    runtime double not null default 0,
+    runtime double not null default 0, # time in seconds
 
     r int default null,
     r_delta double default null,
@@ -66,10 +66,10 @@ create table target (
     g2 int default null,
     g2_delta double default null,
 
-    ana double default null,
-    a double default null,
-    b double default null,
-    c double default null,
+    ana double default null, # current in µA
+    a double default null, # current in µA
+    b double default null, # current in µA
+    c double default null, # current in µA
 
     ratio_r_a double default null,
     ratio_r_a_sigma double default null,
