@@ -6,7 +6,6 @@
 delimiter //
 
 create procedure calculate_run($run_id int)
-main:
 begin
     declare $enabled_cycles int default 0;
     declare $valid_enabled_cycles int default 0;
@@ -234,7 +233,20 @@ begin
         ratio_a_ana = $ratio_a_ana,
         ratio_a_ana_sigma = $ratio_a_ana_sigma
     where id = $run_id;
-end -- main
+
+end; -- calculate_run
+
+create procedure update_run($run_id int)
+begin
+    declare $target_id int;
+
+    call calculate_run($run_id);
+
+    select target_id into $target_id
+    from run where run.id = $run_id;
+
+    call calculate_target($target_id);
+end;
 
 //
 delimiter ;
