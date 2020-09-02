@@ -30,4 +30,14 @@ source results/run.sql;
 source results/cycle.sql;
 
 source misc/schema_change.sql;
+source misc/config_variable.sql;
+
+source routines/safe_ratio.sql;
+source routines/count_by_current_ratio.sql;
+source routines/calculate_cycle_ratios.sql;
+source routines/calculate_run.sql;
+source routines/calculate_target.sql;
+source routines/update_run.sql;
+source routines/set_cycle_enabled.sql;
+
 insert into schema_change (version, date_applied) values (1, NOW());

@@ -33,6 +33,8 @@ create table cycle_definition (
 
 delimiter //
 
+# summary:
+# Trigger preventing the updating of cycle definitions.
 create trigger cycle_definition_prevent_update
 before update on cycle_definition for each row
 begin

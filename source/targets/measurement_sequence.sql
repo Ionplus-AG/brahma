@@ -21,6 +21,8 @@ create table measurement_sequence (
 
 delimiter //
 
+# summary:
+# Triggers updating the associated magazines of the inserted, updated or deleted measurement sequences.
 create trigger measurement_sequence_updates_magazine_last_changed
 after insert on measurement_sequence for each row
 begin

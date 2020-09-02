@@ -10,19 +10,29 @@ create table cycle (
     number int not null,
     cycle_definition_id int not null,
 
-    runtime_micros double not null,
-    end_of_cycle datetime(6) not null,
+    runtime double not null, # time in seconds
+    valid bool generated always as (runtime > 0) virtual,
+    end_of_cycle datetime(3) not null,
+
+    enabled bool not null default true,
 
     r int default null,
     g1 int default null,
     g2 int default null,
 
-    ana double default null,
-    a double default null,
-    b double default null,
-    c double default null,
+    ana double default null, # current in µA
+    a double default null, # current in µA
+    b double default null, # current in µA
+    c double default null, # current in µA
 
-    disabled bool not null default false,
+    ratio_r_a double default null,
+    ratio_r_b double default null,
+    ratio_g1_a double default null,
+    ratio_g1_b double default null,
+    ratio_g2_a double default null,
+    ratio_g2_b double default null,
+    ratio_b_a double default null,
+    transmission double default null, # ratio a/ana in %
 
     constraint cycle_run_foreign_key
     foreign key (run_id) references run(id),
@@ -33,43 +43,3 @@ create table cycle (
     constraint cycle_run_number_definition_unique
     unique (run_id, number, cycle_definition_id)
 ) engine=innodb;
-
-create view cycle_ratios as
-    select
-           cycle.id as cycle_id,
-
-           if((r >= 0) && (a > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
-               r/(a/1e6/electrical_charge/elementary_charge*runtime_micros),
-               null) as r_a,
-
-           if((r >= 0) && (b > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
-               r/(b/1e6/electrical_charge/elementary_charge*runtime_micros),
-               null) as r_b,
-
-           if((g1 >= 0) && (a > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
-               g1/(a/1e6/electrical_charge/elementary_charge*runtime_micros),
-               null) as g1_a,
-
-           if((g1 >= 0) && (b > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
-               g1/(b/1e6/electrical_charge/elementary_charge*runtime_micros),
-               null) as g1_b,
-
-           if((g2 >= 0) && (a > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
-               g2/(a/1e6/electrical_charge/elementary_charge*runtime_micros),
-               null) as g2_a,
-
-           if((g2 >= 0) && (b > 0) && (runtime_micros >= 0) && (electrical_charge <> 0),
-               g2/(b/1e6/electrical_charge/elementary_charge*runtime_micros),
-               null) as g2_b,
-
-           if((a > 0) && (b >= 0),
-               b/a,
-               null) as b_a,
-
-           if((ana > 0) && (a >= 0) && (electrical_charge <> 0),
-               a/ana/electrical_charge,
-               null) as a_ana
-
-    from cycle
-        inner join cycle_definition cd on cycle.cycle_definition_id = cd.id
-        inner join (select (1.60217662E-19) as elementary_charge) const;
