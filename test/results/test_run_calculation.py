@@ -7,8 +7,8 @@ import datetime
 from pytest import approx
 
 
-def test_calculate_run(orm, seed_data):
-    cycles = [
+def some_cycles(seed_data, number_of_cycles=20):
+    return [
         seed_data.add_cycle(
             number=i,
             runtime=1,
@@ -22,8 +22,12 @@ def test_calculate_run(orm, seed_data):
             b=2e-6,
             c=3e-6,
         )
-        for i in range(20)
+        for i in range(number_of_cycles)
     ]
+
+
+def test_calculate_run(orm, seed_data):
+    cycles = some_cycles(seed_data)
 
     orm.session.execute(f'call calculate_run({seed_data.run.id})')
     orm.commit()
@@ -143,3 +147,18 @@ def test_performance_of_calculate_run(orm, seed_data, benchmark):
     benchmark(calculate_run)
 
     assert seed_data.run.total_cycles == len(cycles)
+
+
+def test_set_cycle_enabled(orm, seed_data):
+    cycles = some_cycles(seed_data)
+    cycle = cycles[-1]
+
+    orm.session.execute(f'call set_cycle_enabled({seed_data.run.id}, {cycle.id}, false)')
+    orm.commit()
+
+    assert bool(cycle.disabled) is True
+
+    orm.session.execute(f'call set_cycle_enabled({seed_data.run.id}, {cycle.id}, true)')
+    orm.commit()
+
+    assert bool(cycle.disabled) is False

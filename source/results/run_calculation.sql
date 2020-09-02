@@ -248,5 +248,18 @@ begin
     call calculate_target($target_id);
 end;
 
+create procedure set_cycle_enabled($run_id int, $cycle_id int, $enabled bool)
+begin
+    declare $edit_allowed bool;
+    select target.edit_allowed into $edit_allowed
+    from run inner join target on run.target_id = target.id
+    where run.id = $run_id;
+
+    if $edit_allowed then
+        update cycle set disabled=!$enabled where cycle.id = $cycle_id;
+        call update_run($run_id);
+    end if;
+end;
+
 //
 delimiter ;

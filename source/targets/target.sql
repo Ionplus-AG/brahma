@@ -29,7 +29,7 @@ create table target (
     react_time smallint(3) default null,
     target_comment text,
     target_pressed date default null,
-    stop tinyint(1) default '0',
+    stop tinyint(1) default '0', # TODO, 2020-09-02, ewc: could this be a bool?
     old_info varchar(8) default null,
     meas_comment varchar(80) default null,
     fm double default null,
