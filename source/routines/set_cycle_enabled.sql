@@ -24,7 +24,7 @@ begin
     where cycle.id = $cycle_id;
 
     if $edit_allowed then
-        update cycle set disabled=!$enabled where cycle.id = $cycle_id;
+        update cycle set disabled = not $enabled where cycle.id = $cycle_id;
         call update_run($run_id);
     end if;
 end;
