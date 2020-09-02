@@ -14,7 +14,7 @@ create table cycle (
     valid bool generated always as (runtime > 0) virtual,
     end_of_cycle datetime(3) not null,
 
-    disabled bool not null default false,
+    enabled bool not null default true,
 
     r int default null,
     g1 int default null,

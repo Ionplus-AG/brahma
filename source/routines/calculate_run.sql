@@ -68,11 +68,11 @@ begin
         # check if there is something to do
         select count(*)
         into $enabled_cycles
-        from cycle where run_id = $run_id and disabled is false;
+        from cycle where run_id = $run_id and enabled is true;
 
         select count(*)
         into $valid_enabled_cycles
-        from cycle where run_id = $run_id and disabled is false and valid is true;
+        from cycle where run_id = $run_id and enabled is true and valid is true;
 
         if $enabled_cycles < 1 || $enabled_cycles != $valid_enabled_cycles then
             leave calculate;
@@ -85,7 +85,7 @@ begin
                if(count(g1) = $enabled_cycles, sum(g1), null),
                if(count(g2) = $enabled_cycles, sum(g2), null)
         into $runtime, $weight_sum, $r, $g1, $g2
-        from cycle where run_id = $run_id and disabled is false;
+        from cycle where run_id = $run_id and enabled is true;
 
         select count(*)
         into $total_cycles
@@ -94,7 +94,7 @@ begin
         select end_of_cycle
         into $end_of_last_cycle
         from cycle
-        where run_id = $run_id and disabled is false
+        where run_id = $run_id and enabled is true
         order by end_of_cycle desc
         limit 1;
 
@@ -106,7 +106,7 @@ begin
                if(count(b) = $enabled_cycles, sum(b * runtime) / $runtime, null),
                if(count(c) = $enabled_cycles, sum(c * runtime) / $runtime, null)
         into $ana, $b, $c
-        from cycle where run_id = $run_id and disabled is false;
+        from cycle where run_id = $run_id and enabled is true;
 
         if $weight_sum > 0 then
 
@@ -114,35 +114,35 @@ begin
                    if(count(ratio_r_a) = $enabled_cycles, sum(ratio_r_a * a * runtime), null),
                    if(count(ratio_r_a) = $enabled_cycles, sum(ratio_r_a * ratio_r_a * a * runtime), null)
             into $ratio_r_a, $ratio_r_a_sum, $ratio_r_a_sum2
-            from cycle where run_id = $run_id and disabled is false;
+            from cycle where run_id = $run_id and enabled is true;
 
             select if(count(ratio_r_b) = $enabled_cycles, sum(ratio_r_b * a * runtime) / $weight_sum, null),
                    if(count(ratio_r_b) = $enabled_cycles, sum(ratio_r_b * a * runtime), null),
                    if(count(ratio_r_b) = $enabled_cycles, sum(ratio_r_b * ratio_r_b * a * runtime), null)
             into $ratio_r_b, $ratio_r_b_sum, $ratio_r_b_sum2
-            from cycle where run_id = $run_id and disabled is false;
+            from cycle where run_id = $run_id and enabled is true;
 
             select if(count(ratio_g1_a) = $enabled_cycles, sum(ratio_g1_a * a * runtime) / $weight_sum, null),
                    if(count(ratio_g1_b) = $enabled_cycles, sum(ratio_g1_b * a * runtime) / $weight_sum, null)
             into $ratio_g1_a, $ratio_g1_b
-            from cycle where run_id = $run_id and disabled is false;
+            from cycle where run_id = $run_id and enabled is true;
 
             select if(count(ratio_g2_a) = $enabled_cycles, sum(ratio_g2_a * a * runtime) / $weight_sum, null),
                    if(count(ratio_g2_b) = $enabled_cycles, sum(ratio_g2_b * a * runtime) / $weight_sum, null)
             into $ratio_g2_a, $ratio_g2_b
-            from cycle where run_id = $run_id and disabled is false;
+            from cycle where run_id = $run_id and enabled is true;
 
             select if(count(ratio_b_a) = $enabled_cycles, sum(ratio_b_a * a * runtime) / $weight_sum, null),
                    if(count(ratio_b_a) = $enabled_cycles, sum(ratio_b_a * a * runtime), null),
                    if(count(ratio_b_a) = $enabled_cycles, sum(ratio_b_a * ratio_b_a * a * runtime), null)
             into $ratio_b_a, $ratio_b_a_sum, $ratio_b_a_sum2
-            from cycle where run_id = $run_id and disabled is false;
+            from cycle where run_id = $run_id and enabled is true;
 
             select if(count(ratio_a_ana) = $enabled_cycles, sum(ratio_a_ana * a * runtime) / $weight_sum, null),
                    if(count(ratio_a_ana) = $enabled_cycles, sum(ratio_a_ana * a * runtime), null),
                    if(count(ratio_a_ana) = $enabled_cycles, sum(ratio_a_ana * ratio_a_ana * a * runtime), null)
             into $ratio_a_ana, $ratio_a_ana_sum, $ratio_a_ana_sum2
-            from cycle where run_id = $run_id and disabled is false;
+            from cycle where run_id = $run_id and enabled is true;
 
             # calculate the errors
             if $r > 0 then
@@ -173,7 +173,7 @@ begin
                    if($r >= 0 && $ratio_r_b > 0, pow(sum(r / (ratio_r_b * ratio_r_b)), -0.5) / $ratio_r_b, null),
                    if($ratio_b_a > 0, pow(sum(1 / (ratio_b_a * ratio_b_a)), -0.5) / $ratio_b_a, null)
             into $ratio_r_a_delta, $ratio_r_b_delta, $ratio_b_a_delta
-            from cycle where run_id = $run_id and disabled is false;
+            from cycle where run_id = $run_id and enabled is true;
 
             # calculate the sigmas, but only of there are at least 2 cycles
             if $enabled_cycles >= 2 then

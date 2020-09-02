@@ -13,7 +13,7 @@ def some_cycles(seed_data, number_of_cycles=20):
             number=i,
             runtime=1,
             end_of_cycle=datetime.datetime.utcnow(),
-            disabled=i % 3 == 0,
+            enabled=i % 3 != 0,
             r=1e6,
             g1=2e6,
             g2=3e6,
@@ -156,9 +156,9 @@ def test_set_cycle_enabled(orm, seed_data):
     orm.session.execute(f'call set_cycle_enabled({cycle.id}, false)')
     orm.commit()
 
-    assert bool(cycle.disabled) is True
+    assert bool(cycle.enabled) is False
 
     orm.session.execute(f'call set_cycle_enabled({cycle.id}, true)')
     orm.commit()
 
-    assert bool(cycle.disabled) is False
+    assert bool(cycle.enabled) is True
