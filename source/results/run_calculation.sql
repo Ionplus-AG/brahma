@@ -8,11 +8,11 @@ delimiter //
 create procedure calculate_run($run_id int)
 main:
 begin
-    declare $enabled_cycles int;
-    declare $valid_enabled_cycles double;
-    declare $total_cycles int;
+    declare $enabled_cycles int default 0;
+    declare $valid_enabled_cycles int default 0;
+    declare $total_cycles int default 0;
 
-    declare $runtime double;
+    declare $runtime double default 0;
     declare $end_of_last_cycle datetime(3);
 
     declare $r int;
@@ -73,7 +73,7 @@ begin
         if $enabled_cycles < 1 || $enabled_cycles != $valid_enabled_cycles then
             leave calculate;
         end if;
-    
+
         # calculate the sums
         select sum(runtime),
                if(count(a) = $enabled_cycles, sum(a * runtime), null),

@@ -8,10 +8,10 @@ delimiter //
 create procedure calculate_target($target_id int)
 main:
 begin
-    declare $active_runs int;
-    declare $total_runs int;
+    declare $active_runs int default 0;
+    declare $total_runs int default 0;
 
-    declare $runtime double;
+    declare $runtime double default 0;
 
     declare $r int;
     declare $r_delta double;
