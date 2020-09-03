@@ -69,3 +69,23 @@ insert into _brahma_.cycle_definition (
     c_name)
 value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 '''
+
+migrate_run = '''
+insert into _brahma_.run (target_id, number, machine_number, comment)
+select
+  _brahma_.target.id,
+  row_number() over (
+    partition by _brahma_.target.designator order by _ac14_.workproto.run
+  ),
+  %s,
+  _ac14_.workproto.meas_comment
+
+from _ac14_.workproto
+
+inner join _brahma_.target
+  on _ac14_.workproto.sample_nr = _brahma_.target.sample_number
+  and _ac14_.workproto.prep_nr = _brahma_.target.preparation_number
+  and _ac14_.workproto.target_nr = _brahma_.target.number
+
+order by _ac14_.workproto.run
+'''

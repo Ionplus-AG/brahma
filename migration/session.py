@@ -64,7 +64,7 @@ class Session(object):
             a_name='^{12}C', b_name='^{13}C', c_name='^{13}CH')
 
     def migrate_run(self, machine_number):
-        return 6
+        return self.__execute(self.__prepare(queries.migrate_run), machine_number)
 
     def __map(self, mapping, additional_mappings=()):
         query = mapping.to_query(self.source_ams_schema, self.target_schema, additional_mappings)
