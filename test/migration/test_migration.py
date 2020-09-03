@@ -20,3 +20,9 @@ def test_migrate(db_session, ams_schema, brahma_schema):
     assert session.migrate_magazine() == 2
     assert session.associate_magazine() == 5
     assert session.migrate_measurement_sequence() == 5
+
+    machine_number = 42
+    assert session.add_machine(machine_number, 'MICADAS.42', 'M42') == machine_number
+    cycle_definition_id = session.add_default_cycle_definition(isotope_number, machine_number)
+
+    assert session.migrate_run(machine_number) == 6

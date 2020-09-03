@@ -3,7 +3,7 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
-insert_magazine = '''
+migrate_magazine = '''
 insert into _brahma_.magazine (name, is_gas)
 select distinct _ams_.target_t.magazine, false
 from _ams_.target_t
@@ -25,7 +25,7 @@ inner join _brahma_.magazine
 set magazine_id = magazine.id;
 '''
 
-insert_measurement_sequence = '''
+migrate_measurement_sequence = '''
 insert into _brahma_.measurement_sequence (magazine_id, sequence, target_id)
 select
     _brahma_.magazine.id,
@@ -47,3 +47,25 @@ enable_target_triggers = 'set @target_triggers_disabled = null;'
 
 disable_measurement_sequence_triggers = 'set @measurement_sequence_triggers_disabled = true;'
 enable_measurement_sequence_triggers = 'set @measurement_sequence_triggers_disabled = null;'
+
+add_machine = '''
+insert into _brahma_.machine (number, name, prefix)
+value (%s, %s, %s);
+'''
+
+add_cycle_definition = '''
+insert into _brahma_.cycle_definition (
+    isotope_number,
+    machine_number,
+    sequence,
+    electrical_charge,
+    name,
+    r_name,
+    g1_name,
+    g2_name,
+    ana_name,
+    a_name,
+    b_name,
+    c_name)
+value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+'''

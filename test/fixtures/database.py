@@ -84,7 +84,7 @@ class SchemaNames(object):
     def __init__(self):
         self.brahma = '_brahma_'
         self.ams = '_ams_'
-        self.ac14 = '_ac14'
+        self.ac14 = '_ac14_'
 
 
 @pytest.fixture(scope='session')
