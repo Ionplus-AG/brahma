@@ -51,6 +51,11 @@ project = TableMapping('project_t', 'project', (
     ('invoice_date',),
 ))
 
+
+def isotope_number(number):
+    return number, 'isotope_number'
+
+
 sample = TableMapping('sample_t', 'sample', (
     ('sample_nr', 'number'),
     ('project_nr', 'project_number'),
