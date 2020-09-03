@@ -9,7 +9,7 @@ import mysql.connector
 import pytest
 
 
-brahma_sql = pathlib.Path(__file__).parent.parent.parent.absolute() / 'source' / 'brahma.sql'
+brahma_sql = pathlib.Path(__file__).parent.parent.parent.absolute() / 'schema' / 'brahma.sql'
 legacy_ams_sql = pathlib.Path(__file__).parent / 'legacy_ams.sql'
 legacy_ac14_sql = pathlib.Path(__file__).parent / 'legacy_ac14.sql'
 
