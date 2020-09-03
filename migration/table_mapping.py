@@ -19,7 +19,7 @@ class TableMapping(object):
         if not mappings:
             return ''
 
-        target_columns = ', '.join(m[-1] for m in mappings)
+        target_columns = ', '.join(str(m[-1]) for m in mappings)
         return f' ({target_columns})'
 
     def __source_columns(self, additional_mappings):
@@ -27,4 +27,4 @@ class TableMapping(object):
         if not mappings:
             return '*'
 
-        return ', '.join(m[0] for m in mappings)
+        return ', '.join(str(m[0]) for m in mappings)

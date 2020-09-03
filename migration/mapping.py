@@ -86,3 +86,79 @@ sample = TableMapping('sample_t', 'sample', (
     ('old_info',),
     ('user_comment',),
 ))
+
+preparation = TableMapping('preparation_t', 'preparation', (
+    ('sample_nr', 'sample_number'),
+    ('prep_nr', 'number'),
+    ('batch',),
+    ('prep_comment', 'comment'),
+    ('weight_start',),
+    ('weight_medium',),
+    ('weight_end',),
+    ('step1_method',),
+    ('step1_start',),
+    ('step1_end',),
+    ('step2_method',),
+    ('step2_start',),
+    ('step2_end',),
+    ('step3_method',),
+    ('step3_start',),
+    ('step3_end',),
+    ('step4_method',),
+    ('step4_start',),
+    ('step4_end',),
+
+    # step 5 isn't mapped as it doesn't exist anymore
+    # ('step5_method',),
+    # ('step5_start',),
+    # ('step5_end',),
+
+    ('cn_ratio',),
+    ('c_percent',),
+    ('n_percent',),
+    ('prep_end', 'end'),
+    ('stop',),
+    ('old_info',),
+))
+
+target = TableMapping('target_t', 'target', (
+    ('sample_nr', 'sample_number'),
+    ('prep_nr', 'preparation_number'),
+    ('target_nr', 'number'),
+    # ('magazine',), will be mapped in a later step
+    ('position', 'magazine_position'),
+    # ('precis',), not mapped
+    # ('cycle_min',), not mapped
+    ('cycle_max',),
+    # ('combustion',), not mapped
+    # ('catalyst',), not mapped
+    # ('cathode_nr',), not mapped
+    ('reactor_nr',),
+    ('co2_init',),
+    ('co2_final',),
+    ('hydro_init',),
+    ('hydro_final',),
+    ('react_time',),
+    ('target_comment', 'comment'),
+    ('target_pressed', 'pressed'),
+    ('stop',),
+    ('old_info',),
+    ('meas_comment', 'measurement_comment'),
+    ('fm',),
+    ('fm_sig', 'fm_sigma'),
+    ('dc13',),
+    ('dc13_sig', 'dc13_sigma'),
+    ('calcset',),
+    ('editallowed', 'edit_allowed'),
+    ('c14_age',),
+    ('c14_age_sig', 'c14_age_sigma'),
+    ('cal1sMin', 'cal1s_min'),
+    ('cal1sMax', 'cal1s_max'),
+    ('cal2sMin', 'cal2s_min'),
+    ('cal2sMax', 'cal2s_max'),
+    ('weight',),
+    ('conc_n',),
+    ('graphitized',),
+    ('temp', 'temperature'),
+    ('conc_c',),
+))
