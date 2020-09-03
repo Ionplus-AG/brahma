@@ -15,7 +15,8 @@ def test_migrate(db_session, ams_schema, brahma_schema):
 
     assert session.migrate_sample(isotope_number) == 24
     assert session.migrate_preparation(isotope_number) == 277
-    assert session.migrate_target(isotope_number) == 2
+    assert session.migrate_target(isotope_number) == 6
 
-    assert session.migrate_magazine() == 1
-    assert session.associate_magazine() == 1
+    assert session.migrate_magazine() == 2
+    assert session.associate_magazine() == 5
+    assert session.migrate_measurement_sequence() == 5

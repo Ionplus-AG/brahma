@@ -37,6 +37,12 @@ class Session(object):
         self.__execute(queries.enable_target_triggers)
         return result
 
+    def migrate_measurement_sequence(self):
+        self.__execute(queries.disable_measurement_sequence_triggers)
+        result = self.__execute(self.__prepare(queries.insert_measurement_sequence))
+        self.__execute(queries.enable_measurement_sequence_triggers)
+        return result
+
     def __map(self, mapping, additional_mappings=()):
         query = mapping.to_query(self.source_ams_schema, self.target_schema, additional_mappings)
         return self.__execute(query)

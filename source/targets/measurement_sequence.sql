@@ -23,15 +23,27 @@ delimiter //
 
 # summary:
 # Triggers updating the associated magazines of the inserted, updated or deleted measurement sequences.
+set @measurement_sequence_triggers_disabled = false;
+
 create trigger measurement_sequence_updates_magazine_last_changed
 after insert on measurement_sequence for each row
+main:
 begin
+    if @measurement_sequence_triggers_disabled then
+        leave main;
+    end if;
+
     update magazine set last_changed = current_timestamp where id = new.magazine_id;
 end;
 
 create trigger measurement_sequence_update_updates_magazine_last_changed
 after update on measurement_sequence for each row
+main:
 begin
+    if @measurement_sequence_triggers_disabled then
+        leave main;
+    end if;
+
     update magazine set last_changed = current_timestamp where id = new.magazine_id;
     if ( old.magazine_id <> new.magazine_id ) then
         update magazine set last_changed = current_timestamp where id = old.magazine_id;
@@ -40,7 +52,12 @@ end;
 
 create trigger measurement_sequence_delete_updates_magazine_last_changed
 after delete on measurement_sequence for each row
+main:
 begin
+    if @measurement_sequence_triggers_disabled then
+        leave main;
+    end if;
+
     update magazine set last_changed = current_timestamp where id = old.magazine_id;
 end;
 
