@@ -66,6 +66,9 @@ class Session(object):
     def migrate_run(self, machine_number):
         return self.__execute(self.__prepare(queries.migrate_run), machine_number)
 
+    def migrate_cycle(self, cycle_definition_id):
+        return self.__execute(self.__prepare(queries.migrate_cycle), cycle_definition_id)
+
     def __map(self, mapping, additional_mappings=()):
         query = mapping.to_query(self.source_ams_schema, self.target_schema, additional_mappings)
         return self.__execute(query)

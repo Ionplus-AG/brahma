@@ -71,14 +71,15 @@ value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 '''
 
 migrate_run = '''
-insert into _brahma_.run (target_id, number, machine_number, comment)
+insert into _brahma_.run (id, target_id, number, machine_number, comment)
 select
+  cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) as id,
   _brahma_.target.id,
   row_number() over (
     partition by _brahma_.target.designator order by _ac14_.workproto.run
-  ),
-  %s,
-  _ac14_.workproto.meas_comment
+  ) as number,
+  %s as machine_number,
+  _ac14_.workproto.meas_comment as comment
 
 from _ac14_.workproto
 
@@ -88,4 +89,26 @@ inner join _brahma_.target
   and _ac14_.workproto.target_nr = _brahma_.target.number
 
 order by _ac14_.workproto.run
+'''
+
+migrate_cycle = '''
+insert into _brahma_.cycle (run_id, number, cycle_definition_id, runtime, end_of_cycle, enabled,
+                            r, g1, g2, ana, a, b, c)
+select
+  cast(regexp_replace(_ac14_.workana.run, '[^0-9]', '') as signed) as run_id,
+  _ac14_.workana.cycle as number,
+  %s as cycle_definition_id,
+  _ac14_.workana.runtime,
+  _ac14_.workana.timedat as end_of_cycle,
+  _ac14_.workana.cycltrue is null as enabled,
+  _ac14_.workana.r,
+  _ac14_.workana.g1,
+  _ac14_.workana.g2,
+  _ac14_.workana.ana,
+  _ac14_.workana.a,
+  _ac14_.workana.b,
+  _ac14_.workana.iso as c
+
+from _ac14_.workana
+where _ac14_.workana.timedat is not null
 '''

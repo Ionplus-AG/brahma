@@ -23,6 +23,7 @@ def test_migrate(db_session, ams_schema, brahma_schema):
 
     machine_number = 42
     assert session.add_machine(machine_number, 'MICADAS.42', 'M42') == machine_number
-    cycle_definition_id = session.add_default_cycle_definition(isotope_number, machine_number)
-
     assert session.migrate_run(machine_number) == 6
+
+    cycle_definition_id = session.add_default_cycle_definition(isotope_number, machine_number)
+    assert session.migrate_cycle(cycle_definition_id) == 12
