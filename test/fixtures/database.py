@@ -15,6 +15,9 @@ legacy_ac14_sql = pathlib.Path(__file__).parent / 'legacy_ac14.sql'
 
 
 def pytest_addoption(parser):
+    parser.addoption('--dev_schemas', action="store_true", default=False,
+                     help="use _brahma_, _ams_ and _ac14_ for schema names")
+
     parser.addini('mysql_host', 'The host of the MySQL database', None, 'localhost')
     parser.addini('mysql_user', 'The MySQL database user', None, 'root')
     parser.addini('mysql_password', 'The MySQL users password', None)
@@ -77,23 +80,38 @@ def db_session(request):
     session.close()
 
 
-@pytest.fixture(scope='session')
-def brahma_schema(request):
-    config = request.config
-    database_name = config.getini('mysql_database_name')
-
-    _prepare_database(config, database_name, brahma_sql)
-
-    yield database_name
+class SchemaNames(object):
+    def __init__(self):
+        self.brahma = '_brahma_'
+        self.ams = '_ams_'
+        self.ac14 = '_ac14'
 
 
 @pytest.fixture(scope='session')
-def ams_schema(request):
+def schema_names(request):
+    names = SchemaNames()
     config = request.config
-    ams_name = config.getini('mysql_database_name') + '_ams'
-    ac14_name = config.getini('mysql_database_name') + '_ac14'
 
-    _prepare_database(config, ams_name, legacy_ams_sql)
-    _prepare_database(config, ac14_name, legacy_ac14_sql)
+    if not config.getoption("--dev_schemas"):
+        names.brahma = config.getini('mysql_database_name')
+        names.ams = names.brahma + '_ams'
+        names.ac14 = names.brahma + '_ac14'
 
-    yield ams_name, ac14_name
+    yield names
+
+
+@pytest.fixture(scope='session')
+def brahma_schema(request, schema_names):
+    config = request.config
+    _prepare_database(config, schema_names.brahma, brahma_sql)
+
+    yield schema_names.brahma
+
+
+@pytest.fixture(scope='session')
+def ams_schema(request, schema_names):
+    config = request.config
+    _prepare_database(config, schema_names.ams, legacy_ams_sql)
+    _prepare_database(config, schema_names.ac14, legacy_ac14_sql)
+
+    yield schema_names.ams, schema_names.ac14
