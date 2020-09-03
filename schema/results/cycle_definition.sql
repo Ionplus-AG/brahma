@@ -5,7 +5,7 @@
 
 create table cycle_definition (
     id int primary key auto_increment,
-    creation_date timestamp not null,
+    creation_date timestamp not null default current_timestamp on update current_timestamp,
 
     isotope_number int not null,
     machine_number int not null,
