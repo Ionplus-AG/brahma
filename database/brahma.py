@@ -4,6 +4,7 @@
 #
 import pathlib
 
+from database import schema
 from database import sql_script
 
 _schema_sql = pathlib.Path(__file__).parent.parent.absolute() / 'schema' / 'brahma.sql'
@@ -16,10 +17,7 @@ class Brahma(object):
 
     @property
     def exists(self):
-        query = f"select schema_name from information_schema.schemata where schema_name = '{self.schema_name}'"
-        with self.session.cursor() as cursor:
-            cursor.execute(query)
-            return bool(cursor.fetchall())
+        return schema.exists(self.schema_name, self.session)
 
     def create(self):
         query = f'create database {self.schema_name} character set utf8mb4 collate utf8mb4_unicode_ci'
