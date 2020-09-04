@@ -7,26 +7,24 @@ import migration
 
 
 def test_migrate(db_session, ams_schema, brahma_schema):
-    session = migration.Session(db_session, brahma_schema, *ams_schema)
+    ams_migrator = migration.AmsMigrator(db_session, ams_schema[0], brahma_schema, 3)
+    assert ams_migrator.migrate_customer() == 1
+    assert ams_migrator.migrate_project() == 1
 
-    isotope_number = 3
-    assert session.migrate_customer() == 1
-    assert session.migrate_project() == 1
+    assert ams_migrator.migrate_sample() == 24
+    assert ams_migrator.migrate_preparation() == 277
+    assert ams_migrator.migrate_target() == 6
 
-    assert session.migrate_sample(isotope_number) == 24
-    assert session.migrate_preparation(isotope_number) == 277
-    assert session.migrate_target(isotope_number) == 6
+    assert ams_migrator.migrate_magazine() == 2
+    assert ams_migrator.associate_magazine() == 5
+    assert ams_migrator.migrate_measurement_sequence() == 5
 
-    assert session.migrate_magazine() == 2
-    assert session.associate_magazine() == 5
-    assert session.migrate_measurement_sequence() == 5
+    ac14_migrator = migration.Ac14Migrator(db_session, ams_schema[1], brahma_schema, 3, 42)
+    assert ac14_migrator.add_machine('MICADAS.42', 'M42') == ac14_migrator.machine_number
+    assert ac14_migrator.migrate_run() == 6
 
-    machine_number = 42
-    assert session.add_machine(machine_number, 'MICADAS.42', 'M42') == machine_number
-    assert session.migrate_run(isotope_number, machine_number) == 6
+    cycle_definition_id = ac14_migrator.add_default_cycle_definition()
+    assert ac14_migrator.migrate_cycle(cycle_definition_id) == 12
 
-    cycle_definition_id = session.add_default_cycle_definition(isotope_number, machine_number)
-    assert session.migrate_cycle(cycle_definition_id, machine_number) == 12
-
-    assert session.calculate_runs(machine_number) == 6
-    assert session.calculate_targets(machine_number) == 2
+    assert ac14_migrator.calculate_runs() == 6
+    assert ac14_migrator.calculate_targets() == 2

@@ -89,26 +89,26 @@ def migrate_ams(source, target, isotope, **kwargs):
     TARGET: the name of the brahma database to migrate to
     """
     click.echo('')
-    with database.Session(**kwargs) as db_session:
-        _validate(source, target, db_session)
+    with database.Session(**kwargs) as session:
+        _validate(source, target, session)
 
         click.echo(f'Migrating {source} into {target}')
-        session = migration.Session(db_session, target, source, '<unused>')
+        migrator = migration.AmsMigrator(session, source, target, isotope)
 
-        _migrate('customer', session.migrate_customer)
-        _migrate('project', session.migrate_project)
+        _migrate('customer', migrator.migrate_customer)
+        _migrate('project', migrator.migrate_project)
 
-        _migrate('sample', session.migrate_sample, isotope)
-        _migrate('preparation', session.migrate_preparation, isotope)
-        _migrate('target', session.migrate_target, isotope)
+        _migrate('sample', migrator.migrate_sample)
+        _migrate('preparation', migrator.migrate_preparation)
+        _migrate('target', migrator.migrate_target)
 
-        _migrate('magazine', session.migrate_magazine)
+        _migrate('magazine', migrator.migrate_magazine)
 
         click.echo('  associating targets to magazines:', nl=False)
-        session.associate_magazine()
+        migrator.associate_magazine()
         click.echo(' done')
 
-        _migrate('measurement_sequence', session.migrate_measurement_sequence)
+        _migrate('measurement_sequence', migrator.migrate_measurement_sequence)
 
     click.echo('done')
 
@@ -127,28 +127,28 @@ def migrate_ac14(source, target, machine_number, isotope, **kwargs):
     MACHINE_NUMBER: the number of the machine to associate the runs to
     """
     click.echo('')
-    with database.Session(**kwargs) as db_session:
-        _validate(source, target, db_session)
+    with database.Session(**kwargs) as session:
+        _validate(source, target, session)
 
         click.echo(f'Migrating {source} into {target}')
-        session = migration.Session(db_session, target, '<unused>', source)
+        migrator = migration.Ac14Migrator(session, source, target, isotope, machine_number)
 
         machine_number = int(machine_number)
         machine_prefix = f'M{machine_number:02d}'
         click.echo(f'  adding machine {machine_prefix}:', nl=False)
-        session.add_machine(machine_number, machine_prefix, machine_prefix)
+        migrator.add_machine(machine_prefix, machine_prefix)
         click.echo(' done')
 
-        _migrate('run', session.migrate_run, isotope, machine_number)
+        _migrate('run', migrator.migrate_run)
 
         click.echo(f'  adding cycle_definition:', nl=False)
-        cycle_definition_id = session.add_default_cycle_definition(isotope, machine_number)
+        cycle_definition_id = migrator.add_default_cycle_definition()
         click.echo(' done')
 
-        _migrate('cycle', session.migrate_cycle, cycle_definition_id, machine_number)
+        _migrate('cycle', migrator.migrate_cycle, cycle_definition_id)
 
-        _perform('calculating', 'runs', session.calculate_runs, machine_number)
-        _perform('calculating', 'targets', session.calculate_targets, machine_number)
+        _perform('calculating', 'runs', migrator.calculate_runs)
+        _perform('calculating', 'targets', migrator.calculate_targets)
 
     click.echo('done')
 
