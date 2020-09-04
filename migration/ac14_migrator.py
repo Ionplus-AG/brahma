@@ -31,11 +31,16 @@ class Ac14Migrator(Migrator):
             self._prepare(queries.migrate_run),
             self.machine_number,
             self.machine_number,
-            self.isotope_number
+            self.isotope_number,
         )
 
     def migrate_cycle(self, cycle_definition_id):
-        return self._execute(self._prepare(queries.migrate_cycle), self.machine_number, cycle_definition_id)
+        return self._execute(
+            self._prepare(queries.migrate_cycle),
+            self.machine_number,
+            cycle_definition_id,
+            self.isotope_number,
+        )
 
     def calculate_runs(self):
         query = f"select id from _brahma_.run where machine_number = '{self.machine_number}'"

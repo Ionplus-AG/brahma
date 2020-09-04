@@ -119,8 +119,9 @@ def migrate_ams(source, target, isotope, **kwargs):
 @click.argument('source')
 @click.argument('target')
 @click.option('--isotope', default=3, show_default=True, help='the isotope number')
+@click.option('--skip-calc', is_flag=True, help='skip the calculation of the runs/targets')
 @click.argument('machine_number')
-def migrate_ac14(source, target, machine_number, isotope, **kwargs):
+def migrate_ac14(source, target, machine_number, isotope, skip_calc, **kwargs):
     """Migrate an ac14 database into brahma.
 
     \b
@@ -149,8 +150,9 @@ def migrate_ac14(source, target, machine_number, isotope, **kwargs):
 
         _migrate('cycle', migrator.migrate_cycle, cycle_definition_id)
 
-        _perform('calculating', 'runs', migrator.calculate_runs)
-        _perform('calculating', 'targets', migrator.calculate_targets)
+        if not skip_calc:
+            _perform('calculating', 'runs', migrator.calculate_runs)
+            _perform('calculating', 'targets', migrator.calculate_targets)
 
     click.echo('done')
 

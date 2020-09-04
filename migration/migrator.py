@@ -19,8 +19,8 @@ class Migrator(object):
             result = cursor.fetchall()
             for row in result:
                 cursor.execute(self._prepare(call.format(*row)))
-                self.db_session.commit()
 
+            self.db_session.commit()
             return len(result)
 
     def _map(self, mapping, additional_mappings=()):

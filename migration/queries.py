@@ -18,7 +18,7 @@ migrate_magazine = '''
 insert into _brahma_.magazine (name, is_gas)
 select distinct _ams_.target_t.magazine, false
 from _ams_.target_t
-where _ams_.target_t.magazine is not null;
+where _ams_.target_t.magazine is not null and _ams_.target_t.position > 0;
 '''
 
 # noinspection SqlWithoutWhere
@@ -33,7 +33,7 @@ inner join _ams_.target_t
 inner join _brahma_.magazine
     on _ams_.target_t.magazine = _brahma_.magazine.name
 
-set magazine_id = magazine.id;
+set magazine_id = _brahma_.magazine.id;
 '''
 
 migrate_measurement_sequence = '''
@@ -84,7 +84,7 @@ value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 migrate_run = '''
 insert into _brahma_.run (id, target_id, number, machine_number, comment)
 select
-  cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) + 1000000 * %s as id,
+  cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) + (1000000 * %s),
   _brahma_.target.id,
   row_number() over (
     partition by _brahma_.target.designator order by _ac14_.workproto.run
@@ -108,7 +108,7 @@ migrate_cycle = '''
 insert into _brahma_.cycle (run_id, number, cycle_definition_id, runtime, end_of_cycle, enabled,
                             r, g1, g2, ana, a, b, c)
 select
-  cast(regexp_replace(_ac14_.workana.run, '[^0-9]', '') as signed) + 1000000 * %s as run_id,
+  cast(regexp_replace(_ac14_.workana.run, '[^0-9]', '') as signed) + (1000000 * %s),
   _ac14_.workana.cycle as number,
   %s as cycle_definition_id,
   _ac14_.workana.runtime,
@@ -123,5 +123,13 @@ select
   _ac14_.workana.iso as c
 
 from _ac14_.workana
-where _ac14_.workana.timedat is not null
+
+inner join _ac14_.workproto on _ac14_.workana.RUN = _ac14_.workproto.RUN
+
+inner join _brahma_.target
+  on _ac14_.workproto.sample_nr = _brahma_.target.sample_number
+  and _ac14_.workproto.prep_nr = _brahma_.target.preparation_number
+  and _ac14_.workproto.target_nr = _brahma_.target.number
+
+where _brahma_.target.isotope_number = %s
 '''
