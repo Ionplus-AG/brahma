@@ -2,6 +2,7 @@
 # Copyright (c) Ionplus AG and contributors. All rights reserved.
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
+from migration import cycle_definition
 from migration import mappings
 from migration import queries
 
@@ -47,21 +48,14 @@ class Session(object):
         self.__execute(self.__prepare(queries.add_machine), number, name, prefix)
         return number
 
-    def add_cycle_definition(self, isotope_number, machine_number, sequence, electrical_charge,
-                             name=None, r_name=None, g1_name=None, g2_name=None, ana_name=None,
-                             a_name=None, b_name=None, c_name=None):
-
-        self.__execute(self.__prepare(queries.add_cycle_definition),
-                       isotope_number, machine_number, sequence, electrical_charge, name,
-                       r_name, g1_name, g2_name, ana_name, a_name, b_name, c_name)
+    def add_cycle_definition(self, definition):
+        self.__execute(self.__prepare(queries.add_cycle_definition), *definition.params)
 
         return self.__get_last_insert_id()
 
     def add_default_cycle_definition(self, isotope_number, machine_number):
-        return self.add_cycle_definition(
-            isotope_number, machine_number, 0, 1,
-            name='default', r_name='^{14}C', ana_name='^{12}C-LE',
-            a_name='^{12}C', b_name='^{13}C', c_name='^{13}CH')
+        definition = cycle_definition.default[isotope_number](machine_number)
+        return self.add_cycle_definition(definition)
 
     def migrate_run(self, isotope_number, machine_number):
         return self.__execute(self.__prepare(queries.migrate_run), machine_number, isotope_number)
