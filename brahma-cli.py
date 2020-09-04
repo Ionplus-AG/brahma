@@ -16,6 +16,7 @@ def common_options(function):
     function = click.option('-p', '--password',
                             prompt=True, hide_input=True, default='',
                             help='the database password')(function)
+    function = click.option('--isotope', default=3, show_default=True, help='the isotope number')(function)
     return function
 
 
@@ -31,6 +32,7 @@ def cli():
 def init(schema_name, rebuild, **kwargs):
     """Initialize the brahma database schema.
 
+    \b
     SCHEMA_NAME: the name for the brahma database schema
     """
     click.echo('')
@@ -62,8 +64,8 @@ def _validate(source, target, db_session):
         sys.exit(1)
 
 
-def _migrate(name, function, *args):
-    click.echo(f'  migrating {name}:', nl=False)
+def _perform(action, name, function, *args):
+    click.echo(f'  {action} {name}:', nl=False)
     result = function(*args)
     rows = 'rows'
     if result == 1:
@@ -71,14 +73,18 @@ def _migrate(name, function, *args):
     click.echo(f' {result} {rows}')
 
 
+def _migrate(name, function, *args):
+    _perform('migrating', name, function, *args)
+
+
 @click.command()
 @common_options
 @click.argument('source')
 @click.argument('target')
-@click.option('--isotope', default=3, show_default=True, help='the isotope number to use for the migrated samples')
 def migrate_ams(source, target, isotope, **kwargs):
     """Migrate an ams database into brahma.
 
+    \b
     SOURCE: the name of the ams database to migrate from
     TARGET: the name of the brahma database to migrate to
     """
@@ -111,15 +117,40 @@ def migrate_ams(source, target, isotope, **kwargs):
 @common_options
 @click.argument('source')
 @click.argument('target')
-def migrate_ac14(source, target, **kwargs):
+@click.argument('machine_number')
+def migrate_ac14(source, target, machine_number, isotope, **kwargs):
     """Migrate an ac14 database into brahma.
 
+    \b
     SOURCE: the name of the ac14 database to migrate from
     TARGET: the name of the brahma database to migrate to
+    MACHINE_NUMBER: the number of the machine to associate the runs to
     """
     click.echo('')
     with database.Session(**kwargs) as db_session:
         _validate(source, target, db_session)
+
+        click.echo(f'Migrating {source} into {target}')
+        session = migration.Session(db_session, target, '<unused>', source)
+
+        machine_number = int(machine_number)
+        machine_prefix = f'M{machine_number:02d}'
+        click.echo(f'  adding machine {machine_prefix}:', nl=False)
+        session.add_machine(machine_number, machine_prefix, machine_prefix)
+        click.echo(' done')
+
+        _migrate('run', session.migrate_run, isotope, machine_number)
+
+        click.echo(f'  adding cycle_definition:', nl=False)
+        cycle_definition_id = session.add_default_cycle_definition(isotope, machine_number)
+        click.echo(' done')
+
+        _migrate('cycle', session.migrate_cycle, cycle_definition_id, machine_number)
+
+        _perform('calculating', 'runs', session.calculate_runs, machine_number)
+        _perform('calculating', 'targets', session.calculate_targets, machine_number)
+
+    click.echo('done')
 
 
 cli.add_command(init)

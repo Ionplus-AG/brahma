@@ -63,23 +63,22 @@ class Session(object):
     def migrate_cycle(self, cycle_definition_id, machine_number):
         return self.__execute(self.__prepare(queries.migrate_cycle), machine_number, cycle_definition_id)
 
-    def calculate_all_runs(self):
+    def calculate_runs(self, machine_number):
+        query = f"select id from _brahma_.run where machine_number = '{machine_number}'"
+        call = 'call _brahma_.calculate_run({0})'
+        return self.__call_for_each(query, call)
+
+    def calculate_targets(self, machine_number):
+        query = f"select distinct target_id from _brahma_.run where machine_number = '{machine_number}'"
+        call = 'call _brahma_.calculate_target({0})'
+        return self.__call_for_each(query, call)
+
+    def __call_for_each(self, query, call):
         with self.db_session.cursor() as cursor:
-            cursor.execute(self.__prepare('select id from _brahma_.run'))
+            cursor.execute(self.__prepare(query))
             result = cursor.fetchall()
-
-            for run_id in (r[0] for r in result):
-                cursor.execute(self.__prepare(f'call _brahma_.calculate_run({run_id})'))
-                self.db_session.commit()
-
-            return len(result)
-
-    def calculate_all_targets(self):
-        with self.db_session.cursor() as cursor:
-            cursor.execute(self.__prepare('select id from _brahma_.target'))
-            result = cursor.fetchall()
-            for target_id in (r[0] for r in result):
-                cursor.execute(self.__prepare(f'call _brahma_.calculate_target({target_id})'))
+            for row in result:
+                cursor.execute(self.__prepare(call.format(*row)))
                 self.db_session.commit()
 
             return len(result)
