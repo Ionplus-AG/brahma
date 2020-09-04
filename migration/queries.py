@@ -73,7 +73,7 @@ value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 migrate_run = '''
 insert into _brahma_.run (id, target_id, number, machine_number, comment)
 select
-  cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) as id,
+  cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) + 1000000 * %s as id,
   _brahma_.target.id,
   row_number() over (
     partition by _brahma_.target.designator order by _ac14_.workproto.run
@@ -97,7 +97,7 @@ migrate_cycle = '''
 insert into _brahma_.cycle (run_id, number, cycle_definition_id, runtime, end_of_cycle, enabled,
                             r, g1, g2, ana, a, b, c)
 select
-  cast(regexp_replace(_ac14_.workana.run, '[^0-9]', '') as signed) as run_id,
+  cast(regexp_replace(_ac14_.workana.run, '[^0-9]', '') as signed) + 1000000 * %s as run_id,
   _ac14_.workana.cycle as number,
   %s as cycle_definition_id,
   _ac14_.workana.runtime,

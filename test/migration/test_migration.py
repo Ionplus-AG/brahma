@@ -26,7 +26,7 @@ def test_migrate(db_session, ams_schema, brahma_schema):
     assert session.migrate_run(isotope_number, machine_number) == 6
 
     cycle_definition_id = session.add_default_cycle_definition(isotope_number, machine_number)
-    assert session.migrate_cycle(cycle_definition_id) == 12
+    assert session.migrate_cycle(cycle_definition_id, machine_number) == 12
 
     assert session.calculate_all_runs() == 6
     assert session.calculate_all_targets() == 6
