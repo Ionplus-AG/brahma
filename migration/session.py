@@ -63,6 +63,27 @@ class Session(object):
     def migrate_cycle(self, cycle_definition_id):
         return self.__execute(self.__prepare(queries.migrate_cycle), cycle_definition_id)
 
+    def calculate_all_runs(self):
+        with self.db_session.cursor() as cursor:
+            cursor.execute(self.__prepare('select id from _brahma_.run'))
+            result = cursor.fetchall()
+
+            for run_id in (r[0] for r in result):
+                cursor.execute(self.__prepare(f'call _brahma_.calculate_run({run_id})'))
+                self.db_session.commit()
+
+            return len(result)
+
+    def calculate_all_targets(self):
+        with self.db_session.cursor() as cursor:
+            cursor.execute(self.__prepare('select id from _brahma_.target'))
+            result = cursor.fetchall()
+            for target_id in (r[0] for r in result):
+                cursor.execute(self.__prepare(f'call _brahma_.calculate_target({target_id})'))
+                self.db_session.commit()
+
+            return len(result)
+
     def __map(self, mapping, additional_mappings=()):
         query = mapping.to_query(self.source_ams_schema, self.target_schema, additional_mappings)
         return self.__execute(query)
