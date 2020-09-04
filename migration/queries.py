@@ -3,6 +3,17 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
+migrate_project_advisor = '''
+insert into _brahma_.project_advisor (name, sort_order)
+select
+     advisor,
+     indexnr
+from _ams_.advisor_t
+on duplicate key update
+    name = _ams_.advisor_t.advisor,
+    sort_order = _ams_.advisor_t.indexnr
+'''
+
 migrate_magazine = '''
 insert into _brahma_.magazine (name, is_gas)
 select distinct _ams_.target_t.magazine, false

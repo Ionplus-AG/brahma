@@ -96,6 +96,7 @@ def migrate_ams(source, target, isotope, **kwargs):
         migrator = migration.AmsMigrator(session, source, target, isotope)
 
         _migrate('customer', migrator.migrate_customer)
+        _migrate('project_advisor', migrator.migrate_project_advisor)
         _migrate('project', migrator.migrate_project)
 
         _migrate('sample', migrator.migrate_sample)

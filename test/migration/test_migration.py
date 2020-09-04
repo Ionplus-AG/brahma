@@ -9,6 +9,7 @@ import migration
 def test_migrate(db_session, ams_schema, brahma_schema):
     ams_migrator = migration.AmsMigrator(db_session, ams_schema[0], brahma_schema, 3)
     assert ams_migrator.migrate_customer() == 1
+    assert ams_migrator.migrate_project_advisor() == 3
     assert ams_migrator.migrate_project() == 1
 
     assert ams_migrator.migrate_sample() == 24

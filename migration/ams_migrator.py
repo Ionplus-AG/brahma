@@ -15,6 +15,9 @@ class AmsMigrator(Migrator):
     def migrate_customer(self):
         return self._map(mappings.customer)
 
+    def migrate_project_advisor(self):
+        return self._execute(self._prepare(queries.migrate_project_advisor))
+
     def migrate_project(self):
         return self._map(mappings.project)
 
