@@ -10,13 +10,12 @@ import database.schema
 import migration
 
 
-def common_options(function):
+def database_options(function):
     function = click.option('--host', default='localhost', show_default=True, help='the database host')(function)
     function = click.option('--user', default='root', show_default=True, help='the database user')(function)
     function = click.option('-p', '--password',
                             prompt=True, hide_input=True, default='',
                             help='the database password')(function)
-    function = click.option('--isotope', default=3, show_default=True, help='the isotope number')(function)
     return function
 
 
@@ -27,7 +26,7 @@ def cli():
 
 @click.command()
 @click.option('--rebuild', is_flag=True, help='drops and rebuilds existing brahma instance')
-@common_options
+@database_options
 @click.argument('schema_name')
 def init(schema_name, rebuild, **kwargs):
     """Initialize the brahma database schema.
@@ -78,7 +77,8 @@ def _migrate(name, function, *args):
 
 
 @click.command()
-@common_options
+@database_options
+@click.option('--isotope', default=3, show_default=True, help='the isotope number')
 @click.argument('source')
 @click.argument('target')
 def migrate_ams(source, target, isotope, **kwargs):
@@ -114,9 +114,10 @@ def migrate_ams(source, target, isotope, **kwargs):
 
 
 @click.command()
-@common_options
+@database_options
 @click.argument('source')
 @click.argument('target')
+@click.option('--isotope', default=3, show_default=True, help='the isotope number')
 @click.argument('machine_number')
 def migrate_ac14(source, target, machine_number, isotope, **kwargs):
     """Migrate an ac14 database into brahma.
