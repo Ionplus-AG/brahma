@@ -63,8 +63,8 @@ class Session(object):
             name='default', r_name='^{14}C', ana_name='^{12}C-LE',
             a_name='^{12}C', b_name='^{13}C', c_name='^{13}CH')
 
-    def migrate_run(self, machine_number):
-        return self.__execute(self.__prepare(queries.migrate_run), machine_number)
+    def migrate_run(self, isotope_number, machine_number):
+        return self.__execute(self.__prepare(queries.migrate_run), machine_number, isotope_number)
 
     def migrate_cycle(self, cycle_definition_id):
         return self.__execute(self.__prepare(queries.migrate_cycle), cycle_definition_id)

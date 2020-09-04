@@ -88,6 +88,8 @@ inner join _brahma_.target
   and _ac14_.workproto.prep_nr = _brahma_.target.preparation_number
   and _ac14_.workproto.target_nr = _brahma_.target.number
 
+where _brahma_.target.isotope_number = %s
+
 order by _ac14_.workproto.run
 '''
 
