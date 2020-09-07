@@ -3,7 +3,8 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
-from legacy import calculation_correction, calculation_sample, calculation_set, sampletype, target, workana, workproto
+from legacy import calculation_correction, calculation_sample, calculation_set,\
+    routines, sampletype, target, workana, workproto
 
 
 class Generator(object):
@@ -29,6 +30,8 @@ class Generator(object):
         self._prepare_and_execute(target.target_v)
         self._prepare_and_execute(workana.workana_v)
         self._prepare_and_execute(workproto.workproto_v_nt)
+        self._prepare_and_execute(routines.setCycleEnableNT)
+        self._prepare_and_execute(routines.setRunEnableNT)
 
     def _prepare_and_execute(self, query, *args):
         self._execute(self._prepare(query), *args)

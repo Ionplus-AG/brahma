@@ -43,5 +43,6 @@ source routines/calculate_run.sql;
 source routines/calculate_target.sql;
 source routines/update_run.sql;
 source routines/set_cycle_enabled.sql;
+source routines/set_run_enabled.sql;
 
 insert into schema_change (version, date_applied) values (1, NOW());
