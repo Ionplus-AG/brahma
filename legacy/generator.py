@@ -3,8 +3,7 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
-from legacy import calculation_correction, calculation_sample, calculation_set,\
-    routines, sampletype, target, workana, workproto
+from legacy import calculation_sets, routines, targets, results
 
 
 class Generator(object):
@@ -23,13 +22,13 @@ class Generator(object):
         ]
 
     def run(self):
-        self._prepare_and_execute(calculation_correction.calc_corr_t)
-        self._prepare_and_execute(calculation_sample.calc_sample_t)
-        self._prepare_and_execute(calculation_set.calc_set_t)
-        self._prepare_and_execute(sampletype.sampletype_t)
-        self._prepare_and_execute(target.target_v)
-        self._prepare_and_execute(workana.workana_v)
-        self._prepare_and_execute(workproto.workproto_v_nt)
+        self._prepare_and_execute(calculation_sets.calc_corr_t)
+        self._prepare_and_execute(calculation_sets.calc_sample_t)
+        self._prepare_and_execute(calculation_sets.calc_set_t)
+        self._prepare_and_execute(targets.sampletype_t)
+        self._prepare_and_execute(targets.target_v)
+        self._prepare_and_execute(results.workana_v)
+        self._prepare_and_execute(results.workproto_v_nt)
         self._prepare_and_execute(routines.setCycleEnableNT)
         self._prepare_and_execute(routines.setRunEnableNT)
 
