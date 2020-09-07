@@ -32,6 +32,10 @@ source results/cycle.sql;
 source misc/schema_change.sql;
 source misc/config_variable.sql;
 
+source calculation_sets/calculation_set.sql;
+source calculation_sets/calculation_correction.sql;
+source calculation_sets/calculation_sample.sql;
+
 source routines/safe_ratio.sql;
 source routines/count_by_current_ratio.sql;
 source routines/calculate_cycle_ratios.sql;
