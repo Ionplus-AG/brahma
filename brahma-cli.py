@@ -113,6 +113,10 @@ def migrate_ams(source, target, isotope, **kwargs):
 
         _migrate('measurement_sequence', migrator.migrate_measurement_sequence)
 
+        _migrate('calculation_set', migrator.migrate_calculation_set)
+        _migrate('calculation_correction', migrator.migrate_calculation_correction)
+        _migrate('calculation_sample', migrator.migrate_calculation_sample)
+
     click.echo('done')
 
 

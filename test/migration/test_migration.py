@@ -20,6 +20,10 @@ def test_migrate(db_session, ams_schema, brahma_schema):
     assert ams_migrator.associate_magazine() == 5
     assert ams_migrator.migrate_measurement_sequence() == 5
 
+    assert ams_migrator.migrate_calculation_set() == 0
+    assert ams_migrator.migrate_calculation_correction() == 0
+    assert ams_migrator.migrate_calculation_sample() == 0
+
     ac14_migrator = migration.Ac14Migrator(db_session, ams_schema[1], brahma_schema, 3, 42)
     assert ac14_migrator.add_machine('MICADAS.42', 'M42') == ac14_migrator.machine_number
     assert ac14_migrator.migrate_run() == 6
