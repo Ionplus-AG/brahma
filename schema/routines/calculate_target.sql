@@ -209,10 +209,10 @@ begin
         ana = $ana,
         c = $c,
         ratio_r_a = $ratio_r_a,
-        ratio_r_a_delta = $ratio_r_a_delta,
+        ratio_r_a_delta = $ratio_r_a_delta, # TODO, ewc 2020-09-07: in ac14 this has been hardcoded to null. Required?
         ratio_r_a_sigma = $ratio_r_a_sigma,
         ratio_r_b = $ratio_r_b,
-        ratio_r_b_delta = $ratio_r_b_delta,
+        ratio_r_b_delta = $ratio_r_b_delta, # TODO, ewc 2020-09-07: in ac14 this has been hardcoded to null. Required?
         ratio_r_b_sigma = $ratio_r_b_sigma,
         ratio_g1_a = $ratio_g1_a,
         ratio_g1_b = $ratio_g1_b,

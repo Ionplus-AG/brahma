@@ -3,6 +3,7 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
+# TODO, ewc, 2020-09-07: deba -> dba?
 workana_v = '''
 create view _legacy_.workana_v as
 select
@@ -10,7 +11,7 @@ select
   cycle.ratio_r_b * 1e12 as rb12,
   cycle.r - (run.r / run.enabled_cycles) as dr,
   ((cycle.ratio_r_a - run.ratio_r_a) / run.ratio_r_a) * 100 as dra,
-  ((cycle.ratio_b_a - run.ratio_b_a) / run.ratio_b_a) * 100 as deba, # TODO, ewc, 2020-09-07: dba?
+  ((cycle.ratio_b_a - run.ratio_b_a) / run.ratio_b_a) * 100 as deba,
   ((cycle.ratio_r_b - run.ratio_r_b) / run.ratio_r_b) * 100 as drb,
   ((cycle.transmission - run.transmission) / run.transmission) * 100 as dtra,
   cycle.id as recno,
