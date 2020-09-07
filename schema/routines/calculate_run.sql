@@ -146,7 +146,7 @@ begin
 
             # calculate the errors
             if $r > 0 then
-                set $r_delta = 100 / sqrt($r); # TODO, 2020-09-01, ewc: WTF?
+                set $r_delta = 100 / sqrt($r);
             elseif $r = 0 then
                 set $r_delta = 100;
             else
@@ -154,7 +154,7 @@ begin
             end if;
 
             if $g1 > 0 then
-                set $g1_delta = 100 / sqrt($g1); # TODO, 2020-09-01, ewc: WTF?
+                set $g1_delta = 100 / sqrt($g1);
             elseif $g1 = 0 then
                 set $g1_delta = 100;
             else
@@ -162,7 +162,7 @@ begin
             end if;
 
             if $g2 > 0 then
-                set $g2_delta = 100 / sqrt($g2); # TODO, 2020-09-01, ewc: WTF?
+                set $g2_delta = 100 / sqrt($g2);
             elseif $g2 = 0 then
                 set $g2_delta = 100;
             else
