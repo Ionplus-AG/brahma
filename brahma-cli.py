@@ -9,6 +9,8 @@ import database
 import database.schema
 import migration
 
+from legacy import Generator as LegacyGenerator
+
 
 def database_options(function):
     function = click.option('--host', default='localhost', show_default=True, help='the database host')(function)
@@ -35,8 +37,8 @@ def init(schema_name, rebuild, **kwargs):
     SCHEMA_NAME: the name for the brahma database schema
     """
     click.echo('')
-    with database.Session(**kwargs) as db_session:
-        brahma = database.Brahma(schema_name, db_session)
+    with database.Session(**kwargs) as session:
+        brahma = database.Brahma(schema_name, session)
 
         if brahma.exists:
             if rebuild:
@@ -51,13 +53,13 @@ def init(schema_name, rebuild, **kwargs):
         click.echo('done')
 
 
-def _validate(source, target, db_session):
-    if not database.schema.exists(target, db_session):
+def _validate(source, target, session):
+    if not database.schema.exists(target, session):
         click.echo(f'Error: Target database {target} not found!\n')
         click.echo(f"Consider initializing it by calling 'brahma-cli init {target}'.", err=True)
         sys.exit(1)
 
-    if not database.schema.exists(source, db_session):
+    if not database.schema.exists(source, session):
         click.echo(f'Error: Source database {source} not found!\n', err=True)
         click.echo('Check the spelling an try again.')
         sys.exit(1)
@@ -157,9 +159,41 @@ def migrate_ac14(source, target, machine_number, isotope, skip_calc, **kwargs):
     click.echo('done')
 
 
+@click.command()
+@database_options
+@click.argument('source')
+@click.argument('target')
+@click.option('--isotope', default=3, show_default=True, help='the isotope number')
+@click.argument('machine_number')
+def legacy(source, target, machine_number, isotope, **kwargs):
+    """Generate views for legacy tool onto brahma.
+
+    \b
+    SOURCE: the name of the brahma database to generate the views for
+    TARGET: the name of the legacy-view database
+    MACHINE_NUMBER: the number of the machine the views are for
+    """
+    click.echo('')
+    with database.Session(**kwargs) as session:
+        if not database.schema.exists(source, session):
+            click.echo(f'Error: Source database {source} not found!\n', err=True)
+            click.echo('Check the spelling an try again.')
+            sys.exit(1)
+
+        if database.schema.exists(target, session):
+            click.echo(f'Warning: The schema {target} already exist => going to drop it', err=True)
+            database.schema.drop(target, session)
+
+        database.schema.create(target, session)
+
+        generator = LegacyGenerator(session, source, target, machine_number, isotope)
+        generator.run()
+
+
 cli.add_command(init)
 cli.add_command(migrate_ams)
 cli.add_command(migrate_ac14)
+cli.add_command(legacy)
 
 
 if __name__ == '__main__':
