@@ -79,7 +79,7 @@ begin
                if(count(g1) = $active_runs, sum(g1), null),
                if(count(g2) = $active_runs, sum(g2), null)
         into $runtime, $weight_sum, $r, $g1, $g2
-        from run where target_id = $target_id and disabled is false;
+        from run where target_id = $target_id and enabled;
 
         select count(*)
         into $total_runs
@@ -93,7 +93,7 @@ begin
                if(count(b) = $active_runs, sum(b * runtime) / $runtime, null),
                if(count(c) = $active_runs, sum(c * runtime) / $runtime, null)
         into $ana, $b, $c
-        from run where target_id = $target_id and disabled is false;
+        from run where target_id = $target_id and enabled;
 
         if $weight_sum > 0 then
 
@@ -101,35 +101,35 @@ begin
                    if(count(ratio_r_a) = $active_runs, sum(ratio_r_a * a * runtime), null),
                    if(count(ratio_r_a) = $active_runs, sum(ratio_r_a * ratio_r_a * a * runtime), null)
             into $ratio_r_a, $ratio_r_a_sum, $ratio_r_a_sum2
-            from run where target_id = $target_id and disabled is false;
+            from run where target_id = $target_id and enabled;
 
             select if(count(ratio_r_b) = $active_runs, sum(ratio_r_b * a * runtime) / $weight_sum, null),
                    if(count(ratio_r_b) = $active_runs, sum(ratio_r_b * a * runtime), null),
                    if(count(ratio_r_b) = $active_runs, sum(ratio_r_b * ratio_r_b * a * runtime), null)
             into $ratio_r_b, $ratio_r_b_sum, $ratio_r_b_sum2
-            from run where target_id = $target_id and disabled is false;
+            from run where target_id = $target_id and enabled;
 
             select if(count(ratio_g1_a) = $active_runs, sum(ratio_g1_a * a * runtime) / $weight_sum, null),
                    if(count(ratio_g1_b) = $active_runs, sum(ratio_g1_b * a * runtime) / $weight_sum, null)
             into $ratio_g1_a, $ratio_g1_b
-            from run where target_id = $target_id and disabled is false;
+            from run where target_id = $target_id and enabled;
 
             select if(count(ratio_g2_a) = $active_runs, sum(ratio_g2_a * a * runtime) / $weight_sum, null),
                    if(count(ratio_g2_b) = $active_runs, sum(ratio_g2_b * a * runtime) / $weight_sum, null)
             into $ratio_g2_a, $ratio_g2_b
-            from run where target_id = $target_id and disabled is false;
+            from run where target_id = $target_id and enabled;
 
             select if(count(ratio_b_a) = $active_runs, sum(ratio_b_a * a * runtime) / $weight_sum, null),
                    if(count(ratio_b_a) = $active_runs, sum(ratio_b_a * a * runtime), null),
                    if(count(ratio_b_a) = $active_runs, sum(ratio_b_a * ratio_b_a * a * runtime), null)
             into $ratio_b_a, $ratio_b_a_sum, $ratio_b_a_sum2
-            from run where target_id = $target_id and disabled is false;
+            from run where target_id = $target_id and enabled;
 
             select if(count(transmission) = $active_runs, sum(transmission * a * runtime) / $weight_sum, null),
                    if(count(transmission) = $active_runs, sum(transmission * a * runtime), null),
                    if(count(transmission) = $active_runs, sum(transmission * transmission * a * runtime), null)
             into $transmission, $transmission_sum, $transmission_sum2
-            from run where target_id = $target_id and disabled is false;
+            from run where target_id = $target_id and enabled;
 
             # calculate the errors
             if $r > 0 then
@@ -160,7 +160,7 @@ begin
                    if($r >= 0 && $ratio_r_b > 0, pow(sum(r / (ratio_r_b * ratio_r_b)), -0.5) / $ratio_r_b, null),
                    if($ratio_b_a > 0, pow(sum(1 / (ratio_b_a * ratio_b_a)), -0.5) / $ratio_b_a, null)
             into $ratio_r_a_delta, $ratio_r_b_delta, $ratio_b_a_delta
-            from run where target_id = $target_id and disabled is false;
+            from run where target_id = $target_id and enabled;
 
             # calculate the sigmas, but only of there are at least 2 cycles
             if $active_runs >= 2 then

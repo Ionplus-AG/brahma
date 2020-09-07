@@ -12,7 +12,7 @@ create table run (
     machine_number int not null,
     spectrum_path tinytext default null,
 
-    disabled bool not null default false,
+    enabled bool not null default true,
     comment text default null,
 
     enabled_cycles int not null default 0,
@@ -21,7 +21,7 @@ create table run (
     runtime double not null default 0, # time in seconds
     end_of_last_cycle datetime(3) default null,
 
-    active bool generated always as (runtime > 0 && disabled is false) virtual,
+    active bool generated always as (runtime > 0 && enabled) virtual,
 
     r int default null,
     r_delta double default null,
