@@ -63,12 +63,13 @@ select
   sample.user_label_number as user_label_nr,
   sample.user_description1 as user_desc1,
   sample.user_description2 as user_desc2
+
 from _brahma_.run
 inner join _brahma_.machine on run.machine_number = machine.number
 inner join _brahma_.target on run.target_id = target.id
-inner join _brahma_.sample on target.sample_number = sample.number
+inner join _brahma_.sample on target.isotope_number = sample.isotope_number and target.sample_number = sample.number
 inner join _brahma_.magazine on target.magazine_id = magazine.id
 
-where _brahma_.run.machine_number = _machine_
-  and _brahma_.target.isotope_number = _isotope_;
+where run.machine_number = _machine_
+  and target.isotope_number = _isotope_;
 '''

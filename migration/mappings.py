@@ -138,7 +138,7 @@ target = TableMapping('target_t', 'target', (
     # ('combustion',), not mapped
     # ('catalyst',), not mapped
     # ('cathode_nr',), not mapped
-    ('reactor_nr',),
+    ('reactor_nr', 'reactor_number'),
     ('co2_init',),
     ('co2_final',),
     ('hydro_init',),

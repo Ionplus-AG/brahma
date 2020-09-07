@@ -21,7 +21,7 @@ create table target (
 
     cycle_max int default null,
 
-    reactor_nr smallint(6) default '0',
+    reactor_number smallint(6) default '0',
     co2_init double default null,
     co2_final double default null,
     hydro_init smallint(3) default null,

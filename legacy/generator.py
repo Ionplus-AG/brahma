@@ -3,7 +3,7 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
-from legacy import sampletype, workproto
+from legacy import sampletype, target, workana, workproto
 
 
 class Generator(object):
@@ -23,6 +23,8 @@ class Generator(object):
 
     def run(self):
         self._prepare_and_execute(sampletype.sampletype_t)
+        self._prepare_and_execute(target.target_v)
+        self._prepare_and_execute(workana.workana_v)
         self._prepare_and_execute(workproto.workproto_v_nt)
 
     def _prepare_and_execute(self, query, *args):
