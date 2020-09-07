@@ -14,10 +14,11 @@ delimiter //
 create procedure set_cycle_enabled($cycle_id int, $enabled bool)
 begin
     declare $run_id int;
+    declare $target_id int;
     declare $edit_allowed bool;
 
-    select cycle.run_id, target.edit_allowed
-    into $run_id, $edit_allowed
+    select cycle.run_id, target.id, target.edit_allowed
+    into $run_id, $target_id, $edit_allowed
     from cycle
         inner join run on cycle.run_id = run.id
         inner join target on run.target_id = target.id
@@ -25,7 +26,8 @@ begin
 
     if $edit_allowed then
         update cycle set enabled = $enabled where cycle.id = $cycle_id;
-        call update_run($run_id);
+        call calculate_run($run_id);
+        call calculate_target($target_id);
     end if;
 end;
 

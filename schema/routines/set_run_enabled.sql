@@ -13,17 +13,18 @@ delimiter //
 # - $enabled: If set the true, the cycle will be enabled. Otherwise the cycle will be disabled.
 create procedure set_run_enabled($run_id int, $enabled bool)
 begin
+    declare $target_id int;
     declare $edit_allowed bool;
 
-    select target.edit_allowed
-    into $edit_allowed
+    select target.id, target.edit_allowed
+    into $target_id, $edit_allowed
     from run
         inner join target on run.target_id = target.id
     where run.id = $run_id;
 
     if $edit_allowed then
         update run set enabled = $enabled where run.id = $run_id;
-        call update_run($run_id);
+        call calculate_target($target_id);
     end if;
 end;
 
