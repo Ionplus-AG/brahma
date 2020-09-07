@@ -84,7 +84,7 @@ value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 migrate_run = '''
 insert into _brahma_.run (id, target_id, number, machine_number, comment)
 select
-  cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) + (1000000 * %s),
+  cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) + (1000000 * %s) as id,
   _brahma_.target.id,
   row_number() over (
     partition by _brahma_.target.designator order by _ac14_.workproto.run
@@ -108,19 +108,19 @@ migrate_cycle = '''
 insert into _brahma_.cycle (run_id, number, cycle_definition_id, runtime, end_of_cycle, enabled,
                             r, g1, g2, ana, a, b, c)
 select
-  cast(regexp_replace(_ac14_.workana.run, '[^0-9]', '') as signed) + (1000000 * %s),
+  cast(regexp_replace(_ac14_.workana.run, '[^0-9]', '') as signed) + (1000000 * %s) as run_id,
   _ac14_.workana.cycle as number,
   %s as cycle_definition_id,
   _ac14_.workana.runtime,
   _ac14_.workana.timedat as end_of_cycle,
   _ac14_.workana.cycltrue is null as enabled,
-  _ac14_.workana.r,
-  _ac14_.workana.g1,
-  _ac14_.workana.g2,
-  _ac14_.workana.ana,
-  _ac14_.workana.a,
-  _ac14_.workana.b,
-  _ac14_.workana.iso as c
+  if(_ac14_.workana.r >= 0, _ac14_.workana.r, null),
+  if(_ac14_.workana.g1 >= 0, _ac14_.workana.g1, null),
+  if(_ac14_.workana.g2 >= 0, _ac14_.workana.g2, null),
+  if(_ac14_.workana.ana >= 0, _ac14_.workana.ana, null),
+  if(_ac14_.workana.a >= 0, _ac14_.workana.a, null),
+  if(_ac14_.workana.b >= 0, _ac14_.workana.b, null),
+  if(_ac14_.workana.iso >= 0, _ac14_.workana.iso, null) as c
 
 from _ac14_.workana
 
