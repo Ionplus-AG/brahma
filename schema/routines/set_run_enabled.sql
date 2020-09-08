@@ -11,22 +11,19 @@ delimiter //
 # params:
 # - $cycle_id: The identifier of the cycle.
 # - $enabled: If set the true, the cycle will be enabled. Otherwise the cycle will be disabled.
-create procedure set_cycle_enabled($cycle_id int, $enabled bool)
+create procedure set_run_enabled($run_id int, $enabled bool)
 begin
-    declare $run_id int;
     declare $target_id int;
     declare $edit_allowed bool;
 
-    select cycle.run_id, target.id, target.edit_allowed
-    into $run_id, $target_id, $edit_allowed
-    from cycle
-        inner join run on cycle.run_id = run.id
+    select target.id, target.edit_allowed
+    into $target_id, $edit_allowed
+    from run
         inner join target on run.target_id = target.id
-    where cycle.id = $cycle_id;
+    where run.id = $run_id;
 
     if $edit_allowed then
-        update cycle set enabled = $enabled where cycle.id = $cycle_id;
-        call calculate_run($run_id);
+        update run set enabled = $enabled where run.id = $run_id;
         call calculate_target($target_id);
     end if;
 end;

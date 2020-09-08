@@ -20,17 +20,10 @@ class Brahma(object):
         return schema.exists(self.schema_name, self.session)
 
     def create(self):
-        query = f'create database {self.schema_name} character set utf8mb4 collate utf8mb4_unicode_ci'
-        self.__execute(query)
+        schema.create(self.schema_name, self.session)
 
         # noinspection PyProtectedMember
         sql_script.run(_schema_sql, self.session._host, self.session._user, self.session._password, self.schema_name)
 
     def drop(self):
-        query = f'drop database {self.schema_name}'
-        self.__execute(query)
-
-    def __execute(self, query, *args):
-        with self.session.cursor() as cursor:
-            cursor.execute(query, *args)
-            self.session.commit()
+        schema.drop(self.schema_name, self.session)

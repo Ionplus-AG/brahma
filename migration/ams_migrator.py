@@ -44,3 +44,12 @@ class AmsMigrator(Migrator):
         result = self._execute(self._prepare(queries.migrate_measurement_sequence))
         self._execute(queries.enable_measurement_sequence_triggers)
         return result
+
+    def migrate_calculation_set(self):
+        return self._map(mappings.calculation_set)
+
+    def migrate_calculation_correction(self):
+        return self._map(mappings.calculation_correction)
+
+    def migrate_calculation_sample(self):
+        return self._map(mappings.calculation_sample, (mappings.isotope_number(self.isotope_number),))

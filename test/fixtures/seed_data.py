@@ -105,7 +105,7 @@ class SeedData(object):
             try:
                 self.__orm.delete(obj)
                 self.__orm.commit()
-            except IntegrityError as e:
+            except IntegrityError:
                 self.__orm.rollback()
                 self.__objects.insert(0, obj)
 
@@ -115,4 +115,3 @@ def seed_data(orm):
     data = SeedData(orm)
     yield data
     data.cleanup()
-

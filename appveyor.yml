@@ -13,7 +13,7 @@ install:
   - pipenv sync
 
 test_script:
-  - sh: py.test --capture=tee-sys --junit-xml=test-result.xml -c .appveyor/pytest.ini
+  - sh: py.test --capture=tee-sys --flake8 --junit-xml=test-result.xml -c .appveyor/pytest.ini
 
 on_finish:
   - sh: |

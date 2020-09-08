@@ -10,7 +10,7 @@ class Migrator(object):
         self.target_schema = target_schema
         self.schema_mappings = [
             ('_brahma_', target_schema),
-            (source_schema_template, source_schema)
+            (source_schema_template, source_schema),
         ]
 
     def _call_for_each(self, query, call):
