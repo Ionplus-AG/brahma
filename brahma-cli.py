@@ -150,7 +150,7 @@ def migrate_ac14(source, target, machine_number, isotope, skip_calc, **kwargs):
 
         _migrate('run', migrator.migrate_run)
 
-        click.echo(f'  adding cycle_definition:', nl=False)
+        click.echo('  adding cycle_definition:', nl=False)
         cycle_definition_id = migrator.add_default_cycle_definition()
         click.echo(' done')
 
