@@ -5,7 +5,7 @@
 
 create table cycle_definition (
     id int primary key auto_increment,
-    creation_date timestamp not null,
+    creation_date timestamp not null default current_timestamp on update current_timestamp,
 
     isotope_number int not null,
     machine_number int not null,
@@ -30,16 +30,3 @@ create table cycle_definition (
     constraint cycle_definition_machine_foreign_key
     foreign key (machine_number) references machine(number)
 ) engine=innodb;
-
-delimiter //
-
-# summary:
-# Trigger preventing the updating of cycle definitions.
-create trigger cycle_definition_prevent_update
-before update on cycle_definition for each row
-begin
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'updating on cycle_definition is not allowed';
-end;
-
-//
-delimiter ;

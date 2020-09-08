@@ -27,11 +27,11 @@ create table target (
     hydro_init smallint(3) default null,
     hydro_final smallint(3) default null,
     react_time smallint(3) default null,
-    target_comment text,
-    target_pressed date default null,
+    comment text,
+    pressed date default null,
     stop tinyint(1) default '0', # TODO, 2020-09-02, ewc: could this be a bool?
     old_info varchar(8) default null,
-    meas_comment varchar(80) default null,
+    measurement_comment varchar(80) default null,
     fm double default null,
     fm_sigma double default null,
     dc13 double default null,
@@ -45,10 +45,10 @@ create table target (
     cal2s_min int(4) default null,
     cal2s_max int(4) default null,
     weight double default null,
-    conc_n double default null,
     graphitized date default null,
-    temp double default null,
+    temperature double default null,
     conc_c double default null,
+    conc_n double default null,
 
     carrier double default null,
 
@@ -115,28 +115,46 @@ delimiter //
 
 # summary:
 # Triggers updating the associated magazines of the inserted, updated or deleted targets.
+
+set @target_triggers_disabled = false;
+
 create trigger target_insert_updates_magazine_last_changed
 after insert on target for each row
+main:
 begin
-    if ( new.magazine_id is not null ) then
+    if @target_triggers_disabled then
+        leave main;
+    end if;
+
+    if new.magazine_id is not null then
         update magazine set last_changed = current_timestamp where id = new.magazine_id;
     end if;
 end;
 
 create trigger target_update_updates_magazine_last_changed
 after update on target for each row
+main:
 begin
-    if ( new.magazine_id is not null ) then
+    if @target_triggers_disabled then
+        leave main;
+    end if;
+
+    if new.magazine_id is not null then
         update magazine set last_changed = current_timestamp where id = new.magazine_id;
     end if;
-    if ( old.magazine_id is not null and old.magazine_id <> new.magazine_id ) then
+    if old.magazine_id is not null and old.magazine_id <> new.magazine_id then
         update magazine set last_changed = current_timestamp where id = old.magazine_id;
     end if;
 end;
 
 create trigger target_delete_updates_magazine_last_changed
 after delete on target for each row
+main:
 begin
+    if @target_triggers_disabled then
+        leave main;
+    end if;
+
     if ( old.magazine_id is not null ) then
         update magazine set last_changed = current_timestamp where id = old.magazine_id;
     end if;

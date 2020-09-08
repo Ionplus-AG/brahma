@@ -8,7 +8,7 @@ create table project (
     name varchar(30) not null,
     type varchar(20),
     advisor varchar(10),
-    correspondence_customer_number int not null,
+    customer_number int not null,
     invoice_customer_number int not null,
     in_date date,
     out_date date,
@@ -23,8 +23,8 @@ create table project (
     invoice int unsigned, # TODO, ewc 2020-07-31: what is stored in this field?
     invoice_date date,
 
-    constraint project_correspondence_customer_foreign_key
-    foreign key (correspondence_customer_number) references customer(number),
+    constraint project_customer_foreign_key
+    foreign key (customer_number) references customer(number),
 
     constraint project_invoice_customer_foreign_key
     foreign key (invoice_customer_number) references customer(number),
