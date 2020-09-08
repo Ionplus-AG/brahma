@@ -1,0 +1,15 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+pytest = "*"
+mysql-connector-python = "*"
+sqlalchemy = "*"
+pytest-benchmark = "*"
+click = "*"
+flake8 = "*"
+pytest-flake8 = "*"
