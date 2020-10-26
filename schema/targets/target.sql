@@ -97,10 +97,7 @@ create table target (
     foreign key (isotope_number) references isotope(number),
 
     constraint target_magazine_foreign_key
-    foreign key (magazine_id) references magazine(id),
-
-    constraint target_magazine_position_unique
-    unique (magazine_id, magazine_position)
+    foreign key (magazine_id) references magazine(id)
 ) engine=innodb;
 
 delimiter //
