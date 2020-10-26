@@ -33,9 +33,9 @@ class Migrator(object):
 
         return query
 
-    def _execute(self, query, *args):
+    def _execute(self, query, **kwargs):
         with self.db_session.cursor() as cursor:
-            cursor.execute(query, args)
+            cursor.execute(query, kwargs)
             self.db_session.commit()
             return cursor.rowcount
 

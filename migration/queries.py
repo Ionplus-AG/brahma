@@ -61,7 +61,7 @@ enable_measurement_sequence_triggers = 'set @measurement_sequence_triggers_disab
 
 add_machine = '''
 insert into _brahma_.machine (number, name, prefix)
-value (%s, %s, %s);
+value (%(number)s, %(name)s, %(prefix)s);
 '''
 
 add_cycle_definition = '''
@@ -78,20 +78,32 @@ insert into _brahma_.cycle_definition (
     a_name,
     b_name,
     c_name)
-value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+value (
+    %(isotope_number)s,
+    %(machine_number)s,
+    %(sequence)s,
+    %(electrical_charge)s,
+    %(name)s,
+    %(r_name)s,
+    %(g1_name)s,
+    %(g2_name)s,
+    %(ana_name)s,
+    %(a_name)s,
+    %(b_name)s,
+    %(c_name)s);
 '''
 
 migrate_run = '''
 insert into _brahma_.run (id, target_id, target_run_number, machine_number, machine_run_number, comment)
 select
-  cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) + (1000000 * %s) as id,
+  cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) + (1000000 * %(machine_number)s) as id,
 
   _brahma_.target.id,
   row_number() over (
     partition by _brahma_.target.designator order by _ac14_.workproto.run
   ) as target_run_number,
 
-  %s as machine_number,
+  %(machine_number)s as machine_number,
   row_number() over (
     order by _ac14_.workproto.run
   ) as machine_run_number,
@@ -105,7 +117,7 @@ inner join _brahma_.target
   and _ac14_.workproto.prep_nr = _brahma_.target.preparation_number
   and _ac14_.workproto.target_nr = _brahma_.target.number
 
-where _brahma_.target.isotope_number = %s
+where _brahma_.target.isotope_number = %(isotope_number)s
 
 order by _ac14_.workproto.run
 '''
@@ -114,9 +126,9 @@ migrate_cycle = '''
 insert into _brahma_.cycle (run_id, number, cycle_definition_id, runtime, end_of_cycle, enabled,
                             r, g1, g2, ana, a, b, c)
 select
-  cast(regexp_replace(_ac14_.workana.run, '[^0-9]', '') as signed) + (1000000 * %s) as run_id,
+  cast(regexp_replace(_ac14_.workana.run, '[^0-9]', '') as signed) + (1000000 * %(machine_number)s) as run_id,
   _ac14_.workana.cycle as number,
-  %s as cycle_definition_id,
+  %(cycle_definition_id)s as cycle_definition_id,
   _ac14_.workana.runtime,
   _ac14_.workana.timedat as end_of_cycle,
   _ac14_.workana.cycltrue is null as enabled,
@@ -137,5 +149,5 @@ inner join _brahma_.target
   and _ac14_.workproto.prep_nr = _brahma_.target.preparation_number
   and _ac14_.workproto.target_nr = _brahma_.target.number
 
-where _brahma_.target.isotope_number = %s
+where _brahma_.target.isotope_number = %(isotope_number)s
 '''
