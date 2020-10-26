@@ -96,30 +96,39 @@ value (
 migrate_run = '''
 insert into _brahma_.run (id, target_id, target_run_number, machine_number, machine_run_number, comment)
 select
-  cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) + (1000000 * %(machine_number)s) as id,
-
-  _brahma_.target.id,
-  row_number() over (
-    partition by _brahma_.target.designator order by _ac14_.workproto.run
-  ) as target_run_number,
-
+  sub.machine_run_number + (1000000 * %(machine_number)s) as id,
+  sub.target_id,
+  sub.target_run_number,
   %(machine_number)s as machine_number,
-  row_number() over (
-    order by _ac14_.workproto.run
-  ) as machine_run_number,
+  sub.machine_run_number,
+  sub.comment
 
-  _ac14_.workproto.meas_comment as comment
+from (
+  select
+    _brahma_.target.id as target_id,
 
-from _ac14_.workproto
+    row_number() over (
+    partition by _brahma_.target.designator order by _ac14_.workproto.run
+    ) as target_run_number,
 
-inner join _brahma_.target
-  on _ac14_.workproto.sample_nr = _brahma_.target.sample_number
-  and _ac14_.workproto.prep_nr = _brahma_.target.preparation_number
-  and _ac14_.workproto.target_nr = _brahma_.target.number
+    cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) as machine_run_number,
 
-where _brahma_.target.isotope_number = %(isotope_number)s
+    _ac14_.workproto.meas_comment as comment
 
-order by _ac14_.workproto.run
+  from _ac14_.workproto
+
+  inner join _brahma_.target
+    on _ac14_.workproto.sample_nr = _brahma_.target.sample_number
+    and _ac14_.workproto.prep_nr = _brahma_.target.preparation_number
+    and _ac14_.workproto.target_nr = _brahma_.target.number
+
+  join _brahma_.machine on _brahma_.machine.number = %(machine_number)s
+
+  where _brahma_.target.isotope_number = %(isotope_number)s
+    and _ac14_.workproto.RUN like concat(_brahma_.machine.prefix, '%')
+
+  order by _ac14_.workproto.run
+) as sub
 '''
 
 migrate_cycle = '''
