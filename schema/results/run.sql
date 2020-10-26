@@ -7,9 +7,11 @@ create table run (
     id int primary key auto_increment,
 
     target_id int not null,
-    number int not null,
+    target_run_number int not null,
 
     machine_number int not null,
+    machine_run_number int not null,
+
     spectrum_path tinytext default null,
 
     enabled bool not null default true,
@@ -52,9 +54,12 @@ create table run (
     constraint run_target_foreign_key
     foreign key (target_id) references target(id),
 
-    constraint run_target_number_unique
-    unique (target_id, number),
+    constraint target_run_number_unique
+    unique (target_id, target_run_number),
 
     constraint run_machine_foreign_key
-    foreign key (machine_number) references machine(number)
+    foreign key (machine_number) references machine(number),
+
+    constraint machine_run_number_unique
+    unique (machine_number, machine_run_number)
 ) engine=innodb;

@@ -82,14 +82,20 @@ value (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 '''
 
 migrate_run = '''
-insert into _brahma_.run (id, target_id, number, machine_number, comment)
+insert into _brahma_.run (id, target_id, target_run_number, machine_number, machine_run_number, comment)
 select
   cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) + (1000000 * %s) as id,
+
   _brahma_.target.id,
   row_number() over (
     partition by _brahma_.target.designator order by _ac14_.workproto.run
-  ) as number,
+  ) as target_run_number,
+
   %s as machine_number,
+  row_number() over (
+    order by _ac14_.workproto.run
+  ) as machine_run_number,
+
   _ac14_.workproto.meas_comment as comment
 
 from _ac14_.workproto

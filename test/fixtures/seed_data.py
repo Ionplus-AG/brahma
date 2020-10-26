@@ -28,7 +28,7 @@ class SeedData(object):
             machine_number=self.machine.number,
             sequence=0
         ))
-        self.run = self.add_run(number=1000)
+        self.run = self.add_run()
 
     def add_sample(self, project=None, **kwargs):
         if not project:
@@ -67,9 +67,19 @@ class SeedData(object):
         if not machine:
             machine = self.machine
 
+        machine_run_number = self.__orm.session.query(self.__orm.run).\
+            filter_by(machine_number=machine.number).\
+            count() + 1
+
+        target_run_number = self.__orm.session.query(self.__orm.run).\
+            filter_by(target_id=target.id).\
+            count() + 1
+
         return self.add(self.__orm.run(
             target_id=target.id,
             machine_number=machine.number,
+            machine_run_number=machine_run_number,
+            target_run_number=target_run_number,
             **kwargs,
         ))
 
