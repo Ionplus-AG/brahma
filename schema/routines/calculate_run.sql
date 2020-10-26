@@ -20,13 +20,8 @@ begin
     declare $end_of_last_cycle datetime(3);
 
     declare $r int;
-    declare $r_delta double;
-
     declare $g1 int;
-    declare $g1_delta double;
-
     declare $g2 int;
-    declare $g2_delta double;
 
     declare $ana double;
     declare $a double;
@@ -41,19 +36,16 @@ begin
     declare $ratio_r_a double;
     declare $ratio_r_a_sum double;
     declare $ratio_r_a_sum2 double;
-    declare $ratio_r_a_delta double;
     declare $ratio_r_a_sigma double;
 
     declare $ratio_r_b double;
     declare $ratio_r_b_sum double;
     declare $ratio_r_b_sum2 double;
-    declare $ratio_r_b_delta double;
     declare $ratio_r_b_sigma double;
 
     declare $ratio_b_a double;
     declare $ratio_b_a_sum double;
     declare $ratio_b_a_sum2 double;
-    declare $ratio_b_a_delta double;
     declare $ratio_b_a_sigma double;
 
     declare $transmission double;
@@ -144,37 +136,6 @@ begin
             into $transmission, $transmission_sum, $transmission_sum2
             from cycle where run_id = $run_id and enabled is true;
 
-            # calculate the errors
-            if $r > 0 then
-                set $r_delta = 100 / sqrt($r);
-            elseif $r = 0 then
-                set $r_delta = 100;
-            else
-                set $r_delta = null;
-            end if;
-
-            if $g1 > 0 then
-                set $g1_delta = 100 / sqrt($g1);
-            elseif $g1 = 0 then
-                set $g1_delta = 100;
-            else
-                set $g1_delta = null;
-            end if;
-
-            if $g2 > 0 then
-                set $g2_delta = 100 / sqrt($g2);
-            elseif $g2 = 0 then
-                set $g2_delta = 100;
-            else
-                set $g2_delta = null;
-            end if;
-
-            select if($r >= 0 && $ratio_r_a > 0, pow(sum(r / (ratio_r_a * ratio_r_a)), -0.5) / $ratio_r_a, null),
-                   if($r >= 0 && $ratio_r_b > 0, pow(sum(r / (ratio_r_b * ratio_r_b)), -0.5) / $ratio_r_b, null),
-                   if($ratio_b_a > 0, pow(sum(1 / (ratio_b_a * ratio_b_a)), -0.5) / $ratio_b_a, null)
-            into $ratio_r_a_delta, $ratio_r_b_delta, $ratio_b_a_delta
-            from cycle where run_id = $run_id and enabled is true;
-
             # calculate the sigmas, but only of there are at least 2 cycles
             if $enabled_cycles >= 2 then
 
@@ -213,27 +174,21 @@ begin
         runtime = $runtime,
         end_of_last_cycle = $end_of_last_cycle,
         r = $r,
-        r_delta = $r_delta,
         g1 = $g1,
-        g1_delta = $g1_delta,
         g2 = $g2,
-        g2_delta = $g2_delta,
         a = $a,
         b = $b,
         ana = $ana,
         c = $c,
         ratio_r_a = $ratio_r_a,
-        ratio_r_a_delta = $ratio_r_a_delta, # TODO, ewc 2020-09-07: in ac14 this has been hardcoded to null. Required?
         ratio_r_a_sigma = $ratio_r_a_sigma,
         ratio_r_b = $ratio_r_b,
-        ratio_r_b_delta = $ratio_r_b_delta, # TODO, ewc 2020-09-07: in ac14 this has been hardcoded to null. Required?
         ratio_r_b_sigma = $ratio_r_b_sigma,
         ratio_g1_a = $ratio_g1_a,
         ratio_g1_b = $ratio_g1_b,
         ratio_g2_a = $ratio_g2_a,
         ratio_g2_b = $ratio_g2_b,
         ratio_b_a = $ratio_b_a,
-        ratio_b_a_delta = $ratio_b_a_delta,
         ratio_b_a_sigma = $ratio_b_a_sigma,
         transmission = $transmission,
         transmission_sigma = $transmission_sigma

@@ -3,7 +3,6 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
-# TODO, ewc, 2020-09-07: deba -> dba?
 workana_v = '''
 create view _legacy_.workana_v as
 select
@@ -84,24 +83,18 @@ select
   run.runtime,
   run.enabled_cycles as cycles,
   run.r,
-  run.r_delta as rdel,
   run.g1,
-  run.g1_delta as g1del,
   run.g2,
-  run.g2_delta as g2del,
   run.a,
   run.b,
   run.ana,
   null as anb,
   run.c as iso,
   run.ratio_r_a as ra,
-  run.ratio_r_a_delta as radel,
   run.ratio_r_a_sigma as rasig,
   run.ratio_b_a * 100 as ba,
-  run.ratio_b_a_delta as badel,
   run.ratio_b_a_sigma as basig,
   run.ratio_r_b as rb,
-  run.ratio_r_b_delta as rbdel,
   run.ratio_r_b_sigma as rbsig,
   null as g1a,
   null as g1b,
