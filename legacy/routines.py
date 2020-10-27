@@ -7,10 +7,16 @@ setCycleEnableNT = '''
 create procedure _legacy_.setCycleEnableNT($state int, $run varchar(10), $cycle int)
 main:
 begin
-    declare $cycle_id int;
+    declare $machine_run_number int;
     declare $run_id int;
+    declare $cycle_id int;
 
-    set $run_id = cast(regexp_replace($run, '[^0-9]', '') as signed);
+    set $machine_run_number = cast(regexp_replace($run, '[^0-9]', '') as signed);
+
+    select run.id into $run_id
+    from _brahma_.run
+    where run.machine_number = %(machine_number)s
+      and run.machine_run_number = $machine_run_number;
 
     select cycle.id into $cycle_id
     from _brahma_.cycle
@@ -25,9 +31,15 @@ setRunEnableNT = '''
 create procedure _legacy_.setRunEnableNT($state int, $run varchar(10))
 main:
 begin
+    declare $machine_run_number int;
     declare $run_id int;
 
-    set $run_id = cast(regexp_replace($run, '[^0-9]', '') as signed);
+    set $machine_run_number = cast(regexp_replace($run, '[^0-9]', '') as signed);
+
+    select run.id into $run_id
+    from _brahma_.run
+    where run.machine_number = %(machine_number)s
+      and run.machine_run_number = $machine_run_number;
 
     call _brahma_.set_run_enabled($run_id, $state);
 end;

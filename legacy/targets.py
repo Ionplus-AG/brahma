@@ -95,5 +95,5 @@ inner join _brahma_.project on sample.project_number = project.number
 inner join _brahma_.customer on project.customer_number = customer.number
 inner join _brahma_.magazine on target.magazine_id = magazine.id
 
-where target.isotope_number = _isotope_;
+where target.isotope_number = %(isotope_number)s;
 '''
