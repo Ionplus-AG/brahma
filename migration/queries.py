@@ -125,7 +125,7 @@ from (
   join _brahma_.machine on _brahma_.machine.number = %(machine_number)s
 
   where _brahma_.target.isotope_number = %(isotope_number)s
-    and _ac14_.workproto.RUN like concat(_brahma_.machine.prefix, '%')
+    and _ac14_.workproto.run like concat(_brahma_.machine.prefix, '%')
 
   order by _ac14_.workproto.run
 ) as sub
@@ -158,5 +158,8 @@ inner join _brahma_.target
   and _ac14_.workproto.prep_nr = _brahma_.target.preparation_number
   and _ac14_.workproto.target_nr = _brahma_.target.number
 
+join _brahma_.machine on _brahma_.machine.number = %(machine_number)s
+
 where _brahma_.target.isotope_number = %(isotope_number)s
+  and _ac14_.workana.run like concat(_brahma_.machine.prefix, '%')
 '''
