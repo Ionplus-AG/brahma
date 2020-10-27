@@ -18,7 +18,7 @@ migrate_magazine = '''
 insert into _brahma_.magazine (name, is_gas)
 select distinct _ams_.target_t.magazine, false
 from _ams_.target_t
-where _ams_.target_t.magazine is not null and _ams_.target_t.position > 0;
+where _ams_.target_t.magazine is not null;
 '''
 
 # noinspection SqlWithoutWhere
