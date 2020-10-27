@@ -4,6 +4,7 @@
 #
 import pytest
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql.expression import func
 
 
 class SeedData(object):
@@ -67,13 +68,13 @@ class SeedData(object):
         if not machine:
             machine = self.machine
 
-        machine_run_number = self.__orm.session.query(self.__orm.run).\
-            filter_by(machine_number=machine.number).\
-            count() + 1
+        machine_run_number = (self.__orm.session.query(func.max(self.__orm.run.machine_run_number)).
+                              filter_by(machine_number=machine.number).
+                              scalar() or 0) + 1
 
-        target_run_number = self.__orm.session.query(self.__orm.run).\
-            filter_by(target_id=target.id).\
-            count() + 1
+        target_run_number = (self.__orm.session.query(func.max(self.__orm.run.target_run_number)).
+                             filter_by(target_id=target.id).
+                             scalar() or 0) + 1
 
         return self.add(self.__orm.run(
             target_id=target.id,
