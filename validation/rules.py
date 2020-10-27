@@ -12,10 +12,9 @@ class _Rule(object):
         return self.template.format(*result)
 
 
-_cycles_without_run_error = 'workana without matching workproto: recno: {}, run: {}, cycle: {}'
+_cycles_without_run_error = 'workana without matching workproto: run: {}, cycle: {}'
 _cycles_without_run_query = '''
 select
-  workana.RECNO,
   workana.RUN,
   workana.CYCLE
 
@@ -26,10 +25,9 @@ left join _ac14_.workproto on workana.RUN = workproto.RUN
 where workproto.RUN is null
 '''
 
-_runs_without_target_error = 'workproto without matching target: recno: {}, run {}, target: {}.{}.{}'
+_runs_without_target_error = 'workproto without matching target: run: {}, target: {}.{}.{}'
 _runs_without_target_query = '''
 select
-  workproto.RECNO,
   workproto.RUN,
   workproto.SAMPLE_NR,
   workproto.PREP_NR,
@@ -55,7 +53,7 @@ from (
   select
     flat.target,
     count(distinct flat.prefix) as prefixes_count,
-    group_concat(flat.run separator ', ') as runs
+    group_concat(flat.run order by flat.run separator ', ') as runs
 
   from (
     select

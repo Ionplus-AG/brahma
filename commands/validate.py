@@ -37,7 +37,7 @@ def validate(ams, ac14, **kwargs):
 
         click.echo(f'{len(errors)} validation error{"s" if len(errors) != 1 else ""} found:')
         for error in errors:
-            click.echo('- ' + error, err=True)
+            click.echo('- ' + error)
 
         click.echo('')
 
