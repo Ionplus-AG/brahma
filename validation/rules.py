@@ -45,7 +45,35 @@ on workproto.SAMPLE_NR = target_t.sample_nr
 where target_t.target_nr is null
 '''
 
+_targets_with_multiple_run_prefixes_error = 'target with multiple run-prefixes: target: {}, runs: {}'
+_targets_with_multiple_run_prefixes_query = '''
+select
+  grouped.target,
+  grouped.runs
+
+from (
+  select
+    flat.target,
+    count(distinct flat.prefix) as prefixes_count,
+    group_concat(flat.run separator ', ') as runs
+
+  from (
+    select
+      concat(SAMPLE_NR, '.', PREP_NR, '.', TARGET_NR) as target,
+      regexp_replace(RUN, '[0-9]', '') as prefix,
+      run
+
+    from _ac14_.workproto
+  ) as flat
+
+  group by flat.target
+) as grouped
+
+where grouped.prefixes_count > 1
+'''
+
 tutti = [
     _Rule(_cycles_without_run_query, _cycles_without_run_error),
     _Rule(_runs_without_target_query, _runs_without_target_error),
+    _Rule(_targets_with_multiple_run_prefixes_query, _targets_with_multiple_run_prefixes_error),
 ]
