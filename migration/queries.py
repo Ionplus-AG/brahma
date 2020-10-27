@@ -111,7 +111,7 @@ from (
     partition by _brahma_.target.designator order by _ac14_.workproto.run
     ) as target_run_number,
 
-    cast(regexp_replace(_ac14_.workproto.run, '[^0-9]', '') as signed) as machine_run_number,
+    cast(trim(leading _brahma_.machine.prefix from _ac14_.workproto.run) as signed) as machine_run_number,
 
     _ac14_.workproto.meas_comment as comment
 
@@ -135,7 +135,9 @@ migrate_cycle = '''
 insert into _brahma_.cycle (run_id, number, cycle_definition_id, runtime, end_of_cycle, enabled,
                             r, g1, g2, ana, a, b, c)
 select
-  cast(regexp_replace(_ac14_.workana.run, '[^0-9]', '') as signed) + (1000000 * %(machine_number)s) as run_id,
+  cast(trim(leading _brahma_.machine.prefix from _ac14_.workana.run) as signed) +
+    (1000000 * %(machine_number)s) as run_id,
+
   _ac14_.workana.cycle as number,
   %(cycle_definition_id)s as cycle_definition_id,
   _ac14_.workana.runtime,
