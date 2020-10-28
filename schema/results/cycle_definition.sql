@@ -9,7 +9,7 @@ create table cycle_definition (
 
     isotope_number int not null,
     machine_number int not null,
-    sequence int not null default 0, # TODO, ewc 2020-08-26: we decided on 'index' previously, but that's a reserved keyword in SQL
+    sequence int not null default 0,
 
     electrical_charge double not null default 1.0,
 

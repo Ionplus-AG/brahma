@@ -17,8 +17,6 @@ class Generator(object):
         self.schema_mappings = [
             ('_brahma_', source_schema),
             ('_legacy_', target_schema),
-            ('_machine_', str(machine_number)),
-            ('_isotope_', str(isotope_number)),
         ]
 
     def run(self):
@@ -32,8 +30,10 @@ class Generator(object):
         self._prepare_and_execute(routines.setCycleEnableNT)
         self._prepare_and_execute(routines.setRunEnableNT)
 
-    def _prepare_and_execute(self, query, *args):
-        self._execute(self._prepare(query), *args)
+    def _prepare_and_execute(self, query):
+        self._execute(self._prepare(query),
+                      machine_number=self.machine_number,
+                      isotope_number=self.isotope_number)
 
     def _prepare(self, query):
         for schema_mapping in self.schema_mappings:
@@ -41,7 +41,7 @@ class Generator(object):
 
         return query
 
-    def _execute(self, query, *args):
+    def _execute(self, query, **kwargs):
         with self.db_session.cursor() as cursor:
-            cursor.execute(query, args)
+            cursor.execute(query, kwargs)
             self.db_session.commit()
