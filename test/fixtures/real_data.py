@@ -48,7 +48,7 @@ def real_target(orm, seed_data):
     runs = []
     cycles = []
     for run_number, run_data in groupby(_data, itemgetter(0)):
-        run = seed_data.add_run(number=run_number)
+        run = seed_data.add_run()
 
         cycles.extend(
             (create_cycle(seed_data, run, data) for data in run_data)

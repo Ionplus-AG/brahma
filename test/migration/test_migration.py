@@ -24,8 +24,9 @@ def test_migrate(db_session, ams_schema, brahma_schema):
     assert ams_migrator.migrate_calculation_correction() == 0
     assert ams_migrator.migrate_calculation_sample() == 0
 
+    # migrate all ACxxxxx runs/cycles
     ac14_migrator = migration.Ac14Migrator(db_session, ams_schema[1], brahma_schema, 3, 42)
-    assert ac14_migrator.add_machine('MICADAS.42', 'M42') == ac14_migrator.machine_number
+    assert ac14_migrator.add_machine('MICADAS.42', 'AC') == ac14_migrator.machine_number
     assert ac14_migrator.migrate_run() == 6
 
     cycle_definition_id = ac14_migrator.add_default_cycle_definition()
@@ -33,3 +34,14 @@ def test_migrate(db_session, ams_schema, brahma_schema):
 
     assert ac14_migrator.calculate_runs() == 6
     assert ac14_migrator.calculate_targets() == 2
+
+    # migrate all BCxxxxx runs/cycles
+    bc14_migrator = migration.Ac14Migrator(db_session, ams_schema[1], brahma_schema, 3, 43)
+    assert bc14_migrator.add_machine('MICADAS.43', 'BC') == bc14_migrator.machine_number
+    assert bc14_migrator.migrate_run() == 2
+
+    cycle_definition_id = bc14_migrator.add_default_cycle_definition()
+    assert bc14_migrator.migrate_cycle(cycle_definition_id) == 6
+
+    assert bc14_migrator.calculate_runs() == 2
+    assert bc14_migrator.calculate_targets() == 1

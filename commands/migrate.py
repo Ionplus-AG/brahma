@@ -13,10 +13,10 @@ from commands import common
 
 
 @click.command('migrate_ams')
-@common.database_options
-@click.option('--isotope', default=3, show_default=True, help='the isotope number')
 @click.argument('source')
 @click.argument('target')
+@click.option('--isotope', default=3, show_default=True, help='the isotope number')
+@common.database_options
 def ams(source, target, isotope, **kwargs):
     """Migrate an ams database into brahma.
 
@@ -55,32 +55,27 @@ def ams(source, target, isotope, **kwargs):
 
 
 @click.command('migrate_ac14')
-@common.database_options
 @click.argument('source')
 @click.argument('target')
+@click.argument('machine_number')
 @click.option('--isotope', default=3, show_default=True, help='the isotope number')
 @click.option('--skip-calc', is_flag=True, help='skip the calculation of the runs/targets')
-@click.argument('machine_number')
+@common.database_options
 def ac14(source, target, machine_number, isotope, skip_calc, **kwargs):
     """Migrate an ac14 database into brahma.
 
     \b
     SOURCE: the name of the ac14 database to migrate from
     TARGET: the name of the brahma database to migrate to
-    MACHINE_NUMBER: the number of the machine to associate the runs to
+    MACHINE_NUMBER: the number of the machine to migrate. The machine must exist in TARGET!
     """
     click.echo('')
     with database.Session(**kwargs) as session:
         _validate(source, target, session)
+        _validate_machine_exists(machine_number, target, session)
 
         click.echo(f'Migrating {source} into {target}')
         migrator = migration.Ac14Migrator(session, source, target, isotope, machine_number)
-
-        machine_number = int(machine_number)
-        machine_prefix = f'M{machine_number:02d}'
-        click.echo(f'  adding machine {machine_prefix}:', nl=False)
-        migrator.add_machine(machine_prefix, machine_prefix)
-        click.echo(' done')
 
         _migrate('run', migrator.migrate_run)
 
@@ -107,6 +102,17 @@ def _validate(source, target, session):
         click.echo(f'Error: Source database {source} not found!\n', err=True)
         click.echo('Check the spelling an try again.')
         sys.exit(1)
+
+
+def _validate_machine_exists(machine_number, target, session):
+    query = 'select number from _brahma_.machine where machine.number = %(machine_number)s'.\
+        replace('_brahma_', target)
+
+    with session.cursor() as cursor:
+        cursor.execute(query, {'machine_number': machine_number})
+        if not bool(cursor.fetchall()):
+            click.echo(f'Error: No machine with number {machine_number} found in database {target}\n')
+            sys.exit(1)
 
 
 def _perform(action, name, function, *args):

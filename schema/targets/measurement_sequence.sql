@@ -6,7 +6,7 @@
 create table measurement_sequence (
     id int primary key auto_increment,
     magazine_id int not null,
-    sequence int not null, # TODO, ewc 2020-08-24: we decided on 'index' previously, but that's a reserved keyword in SQL
+    sequence int not null,
     target_id int not null,
 
     constraint measurement_sequence_magazine_foreign_key

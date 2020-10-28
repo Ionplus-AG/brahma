@@ -58,13 +58,8 @@ create table target (
     runtime double not null default 0, # time in seconds
 
     r int default null,
-    r_delta double default null,
-
     g1 int default null,
-    g1_delta double default null,
-
     g2 int default null,
-    g2_delta double default null,
 
     ana double default null, # current in µA
     a double default null, # current in µA
@@ -73,11 +68,9 @@ create table target (
 
     ratio_r_a double default null,
     ratio_r_a_sigma double default null,
-    ratio_r_a_delta double default null,
 
     ratio_r_b double default null,
     ratio_r_b_sigma double default null,
-    ratio_r_b_delta double default null,
 
     ratio_g1_a double default null,
     ratio_g1_b double default null,
@@ -86,7 +79,6 @@ create table target (
 
     ratio_b_a double default null,
     ratio_b_a_sigma double default null,
-    ratio_b_a_delta double default null,
 
     transmission double default null, # ratio a/ana in %
     transmission_sigma double default null,
@@ -105,10 +97,7 @@ create table target (
     foreign key (isotope_number) references isotope(number),
 
     constraint target_magazine_foreign_key
-    foreign key (magazine_id) references magazine(id),
-
-    constraint target_magazine_position_unique
-    unique (magazine_id, magazine_position)
+    foreign key (magazine_id) references magazine(id)
 ) engine=innodb;
 
 delimiter //

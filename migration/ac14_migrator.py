@@ -14,12 +14,19 @@ class Ac14Migrator(Migrator):
         self.machine_number = machine_number
 
     def add_machine(self, name, prefix):
-        self._execute(self._prepare(queries.add_machine), self.machine_number, name, prefix)
+        self._execute(
+            self._prepare(queries.add_machine),
+            number=self.machine_number,
+            name=name,
+            prefix=prefix,
+        )
         return self.machine_number
 
     def add_cycle_definition(self, definition):
-        self._execute(self._prepare(queries.add_cycle_definition), *definition.params)
-
+        self._execute(
+            self._prepare(queries.add_cycle_definition),
+            **vars(definition),
+        )
         return self._get_last_insert_id()
 
     def add_default_cycle_definition(self):
@@ -29,17 +36,16 @@ class Ac14Migrator(Migrator):
     def migrate_run(self):
         return self._execute(
             self._prepare(queries.migrate_run),
-            self.machine_number,
-            self.machine_number,
-            self.isotope_number,
+            machine_number=self.machine_number,
+            isotope_number=self.isotope_number,
         )
 
     def migrate_cycle(self, cycle_definition_id):
         return self._execute(
             self._prepare(queries.migrate_cycle),
-            self.machine_number,
-            cycle_definition_id,
-            self.isotope_number,
+            machine_number=self.machine_number,
+            isotope_number=self.isotope_number,
+            cycle_definition_id=cycle_definition_id,
         )
 
     def calculate_runs(self):
