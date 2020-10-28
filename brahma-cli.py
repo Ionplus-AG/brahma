@@ -12,9 +12,10 @@ def cli():
 
 
 cli.add_command(commands.init)
+cli.add_command(commands.legacy)
 cli.add_command(commands.migrate.ams)
 cli.add_command(commands.migrate.ac14)
-cli.add_command(commands.legacy)
+cli.add_command(commands.validate)
 
 
 if __name__ == '__main__':
