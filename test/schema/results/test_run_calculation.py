@@ -43,13 +43,8 @@ def test_calculate_run(orm, seed_data):
     assert run.end_of_last_cycle == cycles[-1].end_of_cycle
 
     assert run.r == 13e6
-    assert run.r_delta == approx(0.0277350098)
-
     assert run.g1 == approx(26e6)
-    assert run.g1_delta == approx(0.0196116135)
-
     assert run.g2 == approx(39e6)
-    assert run.g2_delta == approx(0.0160128154)
 
     assert run.ana == approx(1e-5)
     assert run.a == approx(1e-6)
@@ -58,11 +53,9 @@ def test_calculate_run(orm, seed_data):
 
     ratio = 0.1602177
     assert run.ratio_r_a == approx(ratio)
-    assert run.ratio_r_a_delta == approx(0.0002773501)
     assert run.ratio_r_a_sigma is None
 
     assert run.ratio_r_b == approx(ratio / 2)
-    assert run.ratio_r_b_delta == approx(0.0002773501)
     assert run.ratio_r_b_sigma is None
 
     assert run.ratio_g1_a == approx(ratio * 2)
@@ -71,7 +64,6 @@ def test_calculate_run(orm, seed_data):
     assert run.ratio_g2_b == approx(ratio * 1.5)
 
     assert run.ratio_b_a == approx(2)
-    assert run.ratio_b_a_delta == approx(0.2773500981)
     assert run.ratio_b_a_sigma == approx(0)
 
     assert run.transmission == approx(10)
@@ -91,13 +83,8 @@ def test_calculate_run_real_data(orm, seed_data, real_run):
     assert run.end_of_last_cycle == real_run[-1].end_of_cycle
 
     assert run.r == 83678
-    assert run.r_delta == approx(0.34569599986721733)
-
     assert run.g1 == 41843
-    assert run.g1_delta == approx(0.4888646031814621)
-
     assert run.g2 == 27892
-    assert run.g2_delta == approx(0.5987701914326449)
 
     assert run.ana == approx(63.8993929931148)
     assert run.a == approx(30.247924531309074)
@@ -105,11 +92,9 @@ def test_calculate_run_real_data(orm, seed_data, real_run):
     assert run.c == approx(0.00130675180112255)
 
     assert run.ratio_r_a == approx(1.5081525913525388e-12)
-    assert run.ratio_r_a_delta == approx(0.003456748856390589)
     assert run.ratio_r_a_sigma == approx(0.29659744253453035)
 
     assert run.ratio_r_b == approx(1.4098758249307175e-10)
-    assert run.ratio_r_b_delta == approx(0.003456752025438527)
     assert run.ratio_r_b_sigma == approx(0.29508154081373933)
 
     assert run.ratio_g1_a == approx(7.541484453076909e-13)
@@ -118,7 +103,6 @@ def test_calculate_run_real_data(orm, seed_data, real_run):
     assert run.ratio_g2_b == approx(4.6994740616329425e-11)
 
     assert run.ratio_b_a == approx(0.010697055795596073)
-    assert run.ratio_b_a_delta == approx(0.25820184137625185)
     assert run.ratio_b_a_sigma == approx(0.017751250350184516)
 
     assert run.transmission == approx(47.33681824521881)

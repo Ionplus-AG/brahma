@@ -23,7 +23,7 @@ select
     std_bl
 
 from _brahma_.calculation_sample
-where isotope_number = _isotope_;
+where isotope_number = %(isotope_number)s;
 '''
 
 calc_set_t = '''

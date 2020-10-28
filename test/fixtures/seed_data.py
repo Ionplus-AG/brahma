@@ -4,6 +4,7 @@
 #
 import pytest
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql.expression import func
 
 
 class SeedData(object):
@@ -28,7 +29,7 @@ class SeedData(object):
             machine_number=self.machine.number,
             sequence=0
         ))
-        self.run = self.add_run(number=1000)
+        self.run = self.add_run()
 
     def add_sample(self, project=None, **kwargs):
         if not project:
@@ -67,9 +68,19 @@ class SeedData(object):
         if not machine:
             machine = self.machine
 
+        machine_run_number = (self.__orm.session.query(func.max(self.__orm.run.machine_run_number)).
+                              filter_by(machine_number=machine.number).
+                              scalar() or 0) + 1
+
+        target_run_number = (self.__orm.session.query(func.max(self.__orm.run.target_run_number)).
+                             filter_by(target_id=target.id).
+                             scalar() or 0) + 1
+
         return self.add(self.__orm.run(
             target_id=target.id,
             machine_number=machine.number,
+            machine_run_number=machine_run_number,
+            target_run_number=target_run_number,
             **kwargs,
         ))
 
