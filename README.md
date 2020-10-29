@@ -8,7 +8,7 @@ Brahma is the database for preparing measurements, storing and analyzing results
 
 ### Database
 
-Brahma requirees MySQL (>=8.0) or MariaDB (>=10.5). For working with brahma-cli or runnin the tests, a database user with ''ALL PRIVILEGES'' is needed.
+Brahma requires MySQL (>=8.0) or MariaDB (>=10.5). For working with brahma-cli or runnin the tests, a database user with ''ALL PRIVILEGES'' is needed.
 
 If the database isn't installed on the host running the tests, matching binaries have to be downloaded installed from https://downloads.mysql.com/archives/community/. Ensure the command line tool ''mysql'' is included in your environments path.
 
