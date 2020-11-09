@@ -26,8 +26,8 @@ create table calculation_set (
     edit tinyint(1) default '1',
     deadtime double default null,
     scatter double default null,
-    ba_nom double not null default '0.975',
-    ra_nom double not null default '100',
+    ba_nom double not null default '0.975', # TODO ewc 2020-11-09: kick
+    ra_nom double not null default '100', # TODO ewc 2020-11-09: kick
     weighting tinyint(4) not null default '0',
     poisson tinyint(4) not null default '1',
     cycles smallint(6) not null default '0',
