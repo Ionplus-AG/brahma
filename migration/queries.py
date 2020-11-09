@@ -37,20 +37,16 @@ set magazine_id = _brahma_.magazine.id;
 '''
 
 migrate_measurement_sequence = '''
-insert into _brahma_.measurement_sequence (magazine_id, sequence, target_id)
+insert into _brahma_.measurement_sequence (magazine_id, sequence, position)
 select
     _brahma_.magazine.id,
     _ams_.measprog_t.sequence,
-    _brahma_.target.id
+    _ams_.measprog_t.position
 
 from _ams_.measprog_t
 
 inner join _brahma_.magazine
   on _brahma_.magazine.name = _ams_.measprog_t.magazine
-
-inner join _brahma_.target
-  on _brahma_.target.magazine_id = _brahma_.magazine.id
-  and _brahma_.target.magazine_position = _ams_.measprog_t.position
 '''
 
 disable_target_triggers = 'set @target_triggers_disabled = true;'
