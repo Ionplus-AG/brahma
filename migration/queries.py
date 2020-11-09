@@ -104,7 +104,7 @@ from (
     _brahma_.target.id as target_id,
 
     row_number() over (
-    partition by _brahma_.target.designator order by _ac14_.workproto.run
+        partition by _brahma_.target.label order by _ac14_.workproto.run
     ) as target_run_number,
 
     cast(trim(leading _brahma_.machine.prefix from _ac14_.workproto.run) as signed) as machine_run_number,
