@@ -10,7 +10,7 @@ create table target (
     sample_number int not null,
     preparation_number int not null,
     number int not null,
-    designator tinytext generated always as (concat(
+    label tinytext generated always as (concat(
         isotope_number, '.',
         sample_number, '.',
         preparation_number, '.',

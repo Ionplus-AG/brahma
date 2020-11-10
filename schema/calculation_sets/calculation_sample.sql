@@ -18,6 +18,8 @@ create table calculation_sample (
 
     primary key (calcset, target_number, sample_number, preparation_number, isotope_number),
 
+    # TODO ewc 2020-11-09: foreign key auf target (via iso, sample, prep, target) & validate
+
     constraint calculation_sample_set_foreign_key
     foreign key (calcset)
     references calculation_set (calcset) on update cascade
