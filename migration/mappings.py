@@ -191,8 +191,6 @@ calculation_set = TableMapping('calc_set_t', 'calculation_set', (
     ('edit',),
     ('deadtime',),
     ('scatter',),
-    ('ba_nom',),
-    ('ra_nom',),
     ('weighting',),
     ('poisson',),
     ('cycles',),
