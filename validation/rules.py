@@ -70,8 +70,26 @@ from (
 where grouped.prefixes_count > 1
 '''
 
+_calc_samples_without_target_error = 'calc_sample without matching target: calcset: {}, target: {}.{}.{}'
+_calc_samples_without_target_query = '''
+select
+  calc_sample_t.calcset,
+  calc_sample_t.sample_nr,
+  calc_sample_t.prep_nr,
+  calc_sample_t.target_nr
+
+from _ams_.calc_sample_t
+left join _ams_.target_t
+on calc_sample_t.sample_nr = target_t.sample_nr
+  and calc_sample_t.prep_nr = target_t.prep_nr
+  and calc_sample_t.target_nr = target_t.target_nr
+
+where target_t.target_nr is null
+'''
+
 tutti = [
     _Rule(_cycles_without_run_query, _cycles_without_run_error),
     _Rule(_runs_without_target_query, _runs_without_target_error),
     _Rule(_targets_with_multiple_run_prefixes_query, _targets_with_multiple_run_prefixes_error),
+    _Rule(_calc_samples_without_target_query, _calc_samples_without_target_error),
 ]
