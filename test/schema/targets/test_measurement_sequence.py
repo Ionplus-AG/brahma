@@ -20,9 +20,9 @@ def set_up(orm, seed_data):
 
 def test_insert_updates_magazine_last_changed(orm, seed_data):
     seed_data.add(orm.measurement_sequence(
-        target_id=seed_data.target.id,
         magazine_id=seed_data.magazine.id,
         sequence=1,
+        position=14,
     ))
     orm.commit()
 
@@ -31,9 +31,9 @@ def test_insert_updates_magazine_last_changed(orm, seed_data):
 
 def test_update_updates_magazine_last_changed(orm, seed_data):
     measurement_sequence = seed_data.add(orm.measurement_sequence(
-        target_id=seed_data.target.id,
         magazine_id=seed_data.magazine.id,
         sequence=1,
+        position=14,
     ))
     orm.commit()
 
@@ -48,9 +48,9 @@ def test_update_updates_magazine_last_changed(orm, seed_data):
 
 def test_delete_updates_magazine_last_changed(orm, seed_data):
     measurement_sequence = orm.add(orm.measurement_sequence(
-        target_id=seed_data.target.id,
         magazine_id=seed_data.magazine.id,
         sequence=1,
+        position=14,
     ))
     orm.commit()
 

@@ -7,13 +7,10 @@ create table measurement_sequence (
     id int primary key auto_increment,
     magazine_id int not null,
     sequence int not null,
-    target_id int not null,
+    position int not null,
 
     constraint measurement_sequence_magazine_foreign_key
     foreign key (magazine_id) references magazine(id),
-
-    constraint measurement_sequence_target_foreign_key
-    foreign key (target_id) references target(id),
 
     constraint measurement_sequence_per_magazine_unique
     unique (magazine_id, sequence)
