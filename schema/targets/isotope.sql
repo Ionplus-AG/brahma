@@ -9,6 +9,7 @@ create table isotope (
     name_markup varchar(30) not null
 ) engine=innodb;
 
+/*
 insert into isotope
 values (1, 'Al26', '^{26}Al'),
        (2, 'Be10', '^{10}Be'),
@@ -18,3 +19,4 @@ values (1, 'Al26', '^{26}Al'),
        (6, 'Pu', 'Pu'),
        (7, 'Si32', '^{32}Si'),
        (8, 'U', 'U');
+*/

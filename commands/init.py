@@ -11,9 +11,10 @@ from commands import common
 
 @click.command()
 @click.option('--rebuild', is_flag=True, help='drops and rebuilds existing brahma instance')
+@click.option('--seed', is_flag=True, help='seeds default value after initialization')
 @common.database_options
 @click.argument('schema_name')
-def init(schema_name, rebuild, **kwargs):
+def init(schema_name, rebuild, seed,  **kwargs):
     """Initialize the brahma database schema.
 
     \b
@@ -33,4 +34,6 @@ def init(schema_name, rebuild, **kwargs):
 
         click.echo(f'Initializing brahma into {schema_name}')
         brahma.create()
+        if (seed):
+            print('ToDo: seed option')
         click.echo('done')
