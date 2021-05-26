@@ -26,8 +26,28 @@ class Orm(object):
         return self.__base.classes.customer
 
     @property
+    def fraction(self):
+        return self.__base.classes.fraction
+
+    @property
+    def material(self):
+        return self.__base.classes.material
+
+    @property
     def project(self):
         return self.__base.classes.project
+
+    @property
+    def project_advisor(self):
+        return self.__base.classes.project_advisor
+
+    @property
+    def project_status(self):
+        return self.__base.classes.project_status
+
+    @property
+    def project_type(self):
+        return self.__base.classes.project_type
 
     @property
     def isotope(self):
@@ -38,8 +58,24 @@ class Orm(object):
         return self.__base.classes.sample
 
     @property
+    def sample_type(self):
+        return self.__base.classes.sample_type
+
+    @property
     def preparation(self):
         return self.__base.classes.preparation
+
+    @property
+    def preparation_method(self):
+        return self.__base.classes.preparation_method
+
+    @property
+    def report_type(self):
+        return self.__base.classes.report_type
+
+    @property
+    def research_type(self):
+        return self.__base.classes.research_type
 
     @property
     def target(self):
