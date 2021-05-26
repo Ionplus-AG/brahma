@@ -3,7 +3,9 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
-from commands.init import init
-from commands.legacy import legacy
-from commands.seed import seed
-from commands.validate import validate
+from seed import isotope
+
+def seed_defaults(session):
+    with session.cursor() as cursor:
+        isotope.seed_isotopes(cursor)
+    session.commit()

@@ -3,7 +3,5 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
-from commands.init import init
-from commands.legacy import legacy
-from commands.seed import seed
-from commands.validate import validate
+from seed.seed_defaults import seed_defaults
+from seed import isotope

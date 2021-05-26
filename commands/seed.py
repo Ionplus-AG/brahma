@@ -7,6 +7,7 @@ import database
 import database.schema
 
 from commands import common
+from seed import seed_defaults
 
 
 @click.command()
@@ -28,25 +29,3 @@ def seed(schema_name, **kwargs):
         else:
             click.echo(f'Seeding failed: \nThe schema {schema_name} does not exist.')
             return
-
-
-def seed_defaults(session):
-    with session.cursor() as cursor:
-        seed_isotopes(cursor)
-    session.commit()
-
-
-isotopes = [
-    (1, 'Al26', '^{26}Al'),
-    (2, 'Be10', '^{10}Be'),
-    (3, 'C14', '^{14}C'),
-    (4, 'Ca41', '^{41}Ca'),
-    (5, 'I129', '^{129}I'),
-    (6, 'Pu', 'Pu'),
-    (7, 'Si32', '^{32}Si'),
-    (8, 'U', 'U')
-]
-
-
-def seed_isotopes(cursor):
-    cursor.executemany("INSERT INTO isotope (number, name, name_markup) VALUES (%s, %s, %s)", isotopes)
