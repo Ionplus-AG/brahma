@@ -15,7 +15,6 @@ from seed import research_type
 from seed import sample_type
 
 
-
 def seed_defaults(session):
     with session.cursor() as cursor:
         fraction.seed(cursor)
