@@ -7,6 +7,7 @@ import database
 import database.schema
 
 from commands import common
+from seed import seed_defaults
 
 
 @click.command()
@@ -29,11 +30,19 @@ def init(schema_name, rebuild, seed,  **kwargs):
                 click.echo(f'Warning: The schema {schema_name} already exist => going to drop it', err=True)
                 brahma.drop()
             else:
-                click.echo(f'The schema {schema_name} already exist => nothing to do')
+                click.echo(f'The schema {schema_name} already exist.')
+                if seed:
+                    seed_default_data(session, schema_name)
                 return
 
         click.echo(f'Initializing brahma into {schema_name}')
         brahma.create()
-        if (seed):
-            print('ToDo: seed option')
+        if seed:
+            seed_default_data(session, schema_name)
         click.echo('done')
+
+
+def seed_default_data(session, schema_name):
+    click.echo(f'Seeding brahma default data into {schema_name}')
+    session.database = schema_name
+    seed_defaults(session)

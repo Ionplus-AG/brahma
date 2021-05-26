@@ -4,4 +4,3 @@
 #
 
 from seed.seed_defaults import seed_defaults
-from seed import isotope

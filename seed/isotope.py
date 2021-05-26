@@ -15,5 +15,5 @@ isotopes = [
 ]
 
 
-def seed_isotopes(cursor):
-    cursor.executemany("INSERT INTO isotope (number, name, name_markup) VALUES (%s, %s, %s)", isotopes)
+def seed(cursor):
+    cursor.executemany("insert into isotope (number, name, name_markup) values (%s, %s, %s)", isotopes)

@@ -7,7 +7,3 @@ create table project_advisor (
     name varchar(20) primary key,
     sort_order int not null
 ) engine=innodb;
-
-insert into project_advisor
-values ('main user', 10),
-       ('training', 20);
