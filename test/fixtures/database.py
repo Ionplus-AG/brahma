@@ -8,6 +8,7 @@ import pytest
 
 import database
 import database.sql_script
+import seed
 
 brahma_sql = pathlib.Path(__file__).parent.parent.parent.absolute() / 'schema' / 'brahma.sql'
 legacy_ams_sql = pathlib.Path(__file__).parent / 'legacy_ams.sql'
@@ -81,6 +82,10 @@ def schema_names(request):
 def brahma_schema(request, schema_names):
     config = request.config
     _prepare_database(config, schema_names.brahma, brahma_sql)
+    session = _create_session(config)
+    session.database = schema_names.brahma
+    seed.seed_defaults(session)
+    session.close()
 
     yield schema_names.brahma
 

@@ -3,8 +3,4 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
-create table preparation_method (
-    name varchar(20) primary key,
-    description text,
-    sort_order int not null
-) engine=innodb;
+from seed.seed_defaults import seed_defaults

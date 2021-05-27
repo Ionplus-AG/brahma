@@ -12,6 +12,7 @@ def cli():
 
 
 cli.add_command(commands.init)
+cli.add_command(commands.seed)
 cli.add_command(commands.legacy)
 cli.add_command(commands.migrate.ams)
 cli.add_command(commands.migrate.ac14)

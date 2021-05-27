@@ -5,4 +5,5 @@
 
 from commands.init import init
 from commands.legacy import legacy
+from commands.seed import seed
 from commands.validate import validate

@@ -1,0 +1,65 @@
+#
+# Copyright (c) Ionplus AG and contributors. All rights reserved.
+# Licensed under the MIT license. See LICENSE file in the project root for details.
+#
+
+fraction = [
+    ('undefined', 0),
+    ('<32 um', 20),
+    ('32-63 um', 21),
+    ('<63 um', 30),
+    ('63-150 um', 31),
+    ('<150 um', 32),
+    ('<500 um', 37),
+    ('150-500 um', 38),
+    ('>500 um', 39),
+    ('alkane', 40),
+    ('alcohol', 44),
+    ('amino acids', 50),
+    ('aragonite', 60),
+    ('benthic', 70),
+    ('black carbon', 80),
+    ('bulk', 84),
+    ('carbonate', 90),
+    ('cellulose', 91),
+    ('charcoal', 92),
+    ('collagen', 100),
+    ('compound', 110),
+    ('cotton', 120),
+    ('dentine', 130),
+    ('detritus', 140),
+    ('DIC', 150),
+    ('DOC', 154),
+    ('fatty acid', 156),
+    ('fibre', 160),
+    ('fine fraction', 170),
+    ('GDCT', 180),
+    ('GDGT', 190),
+    ('gelatin', 200),
+    ('humic acid', 210),
+    ('kerogen', 217),
+    ('linen', 220),
+    ('lipids', 224),
+    ('liquid', 230),
+    ('litter', 240),
+    ('macro remains', 250),
+    ('organic matter', 260),
+    ('planktonic', 270),
+    ('pyrolysis product', 278),
+    ('silk', 280),
+    ('size fraction', 285),
+    ('solid', 290),
+    ('stalactite', 300),
+    ('stalagmite', 304),
+    ('TIC', 310),
+    ('TLE', 315),
+    ('TOC', 320),
+    ('vinegar', 330),
+    ('waxes', 340),
+    ('wine', 350),
+    ('wool', 360)
+]
+
+
+def seed(cursor):
+    cursor.executemany("insert into fraction (name, sort_order) values (%s, %s)", fraction)

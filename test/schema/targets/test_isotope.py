@@ -3,6 +3,7 @@
 # Licensed under the MIT license. See LICENSE file in the project root for details.
 #
 
+
 def test_defaults(orm):
     assert orm.query(orm.isotope).get(1).name == 'Al26'
     assert orm.query(orm.isotope).get(2).name == 'Be10'
