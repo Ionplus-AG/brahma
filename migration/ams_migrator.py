@@ -77,4 +77,3 @@ class AmsMigrator(Migrator):
         result = self._execute(self._prepare(queries.update_target_set_magazine))
         self._execute(queries.enable_target_triggers)
         return result
-
