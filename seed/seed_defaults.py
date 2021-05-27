@@ -4,7 +4,6 @@
 #
 
 from seed import fraction
-from seed import isotope
 from seed import material
 from seed import preparation_method
 from seed import project_advisor
@@ -18,7 +17,6 @@ from seed import sample_type
 def seed_defaults(session):
     with session.cursor() as cursor:
         fraction.seed(cursor)
-        isotope.seed(cursor)
         material.seed(cursor)
         preparation_method.seed(cursor)
         project_advisor.seed(cursor)
