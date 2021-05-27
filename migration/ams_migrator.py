@@ -21,6 +21,30 @@ class AmsMigrator(Migrator):
     def migrate_project(self):
         return self._map(mappings.project)
 
+    def migrate_project_type(self):
+        return self._map(mappings.project_type)
+
+    def migrate_sample_type(self):
+        return self._map(mappings.sample_type)
+
+    def migrate_report_type(self):
+        return self._map(mappings.report_type)
+
+    def migrate_research_type(self):
+        return self._map(mappings.research_type)
+
+    def migrate_material(self):
+        return self._map(mappings.material)
+
+    def migrate_fraction(self):
+        return self._map(mappings.fraction)
+
+    def migrate_method(self):
+        return self._map(mappings.method)
+
+    def project_status(self):
+        return self._map(mappings.project_status)
+
     def migrate_sample(self):
         return self._map(mappings.sample, (mappings.isotope_number(self.isotope_number),))
 

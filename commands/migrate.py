@@ -33,12 +33,19 @@ def ams(source, target, isotope, **kwargs):
 
         _migrate('customer', migrator.migrate_customer)
         _migrate('project_advisor', migrator.migrate_project_advisor)
-        _migrate('project', migrator.migrate_project)
+        _migrate('project_type', migrator.migrate_project_type)
+        _migrate('sample_type', migrator.migrate_sample_type)
+        _migrate('report_type', migrator.migrate_report_type)
+        _migrate('research_type', migrator.migrate_research_type)
+        _migrate('material_t', migrator.migrate_material)
+        _migrate('fraction_t', migrator.migrate_fraction)
+        _migrate('method_t', migrator.migrate_method)
+        _migrate('projectstatus_t', migrator.project_status)
 
+        _migrate('project', migrator.migrate_project)
         _migrate('sample', migrator.migrate_sample)
         _migrate('preparation', migrator.migrate_preparation)
         _migrate('target', migrator.migrate_target)
-
         _migrate('magazine', migrator.migrate_magazine)
 
         click.echo('  associating targets to magazines:', nl=False)
@@ -105,7 +112,7 @@ def _validate(source, target, session):
 
 
 def _validate_machine_exists(machine_number, target, session):
-    query = 'select number from _brahma_.machine where machine.number = %(machine_number)s'.\
+    query = 'select number from _brahma_.machine where machine.number = %(machine_number)s'. \
         replace('_brahma_', target)
 
     with session.cursor() as cursor:
