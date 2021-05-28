@@ -30,6 +30,24 @@ customer = TableMapping('user_t', 'customer', (
     ('salutation',),
 ))
 
+fraction = TableMapping('fraction_t', 'fraction', (
+    ('fraction', 'name'),
+    ('indexnr', 'sort_order'),
+))
+
+
+material = TableMapping('material_t', 'material', (
+    ('material', 'name'),
+    ('indexnr', 'sort_order'),
+))
+
+method = TableMapping('method_t', 'preparation_method', (
+    ('method', 'name'),
+    ('descr', 'description'),
+    ('indexnr', 'sort_order'),
+))
+
+
 project = TableMapping('project_t', 'project', (
     ('project_nr', 'number'),
     ('project', 'name'),
@@ -49,6 +67,38 @@ project = TableMapping('project_t', 'project', (
     ('research', 'research_type'),
     ('invoice',),
     ('invoice_date',),
+))
+
+project_status = TableMapping('projectstatus_t', 'project_status', (
+    ('status', 'name'),
+    ('indexnr', 'sort_order'),
+))
+
+project_type = TableMapping('projecttype_t', 'project_type', (
+    ('type', 'name'),
+    ('indexnr', 'sort_order'),
+))
+
+report_type = TableMapping('reporttype_t', 'report_type', (
+    ('type', 'name'),
+    ('indexnr', 'sort_order'),
+))
+
+research_type = TableMapping('research_t', 'research_type', (
+    ('research', 'name'),
+    ('indexnr', 'sort_order'),
+))
+
+sample_type = TableMapping('sampletype_t', 'sample_type', (
+    ('type', 'name'),
+    ('indexnr', 'sort_order'),
+    ('f14c',),
+    ('f14c_sig', 'f14c_sigma'),
+    ('d13c',),
+    ('d13c_sig', 'd13c_sigma'),
+    ('d13c_nom', 'd13c_nominal'),
+    ('blank',),
+    ('active',),
 ))
 
 
