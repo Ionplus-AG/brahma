@@ -8,7 +8,3 @@ create table project_status (
     sort_order int not null
 ) engine=innodb;
 
-insert into project_status
-values ('planned',1),
-       ('running',2),
-       ('closed',3);
