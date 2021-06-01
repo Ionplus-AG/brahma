@@ -58,6 +58,7 @@ Options:
 
 Commands:
   init          Initialize the brahma database schema.
+  seed          Seeds the brahma database data.
   migrate-ac14  Migrate an ac14 database into brahma.
   migrate-ams   Migrate an ams database into brahma.
 ```
@@ -76,6 +77,7 @@ Usage: brahma-cli.py init [OPTIONS] SCHEMA_NAME
 
 Options:
   --rebuild            drops and rebuilds existing brahma instance
+  --seed               Seeds the brahma database data after initialization.
   -p, --password TEXT  the database password
   --user TEXT          the database user  [default: root]
   --host TEXT          the database host  [default: localhost]
@@ -106,4 +108,4 @@ After all prerequisites are met, the tests are run on a command line in the root
 PS ...\brahma> pipenv run py.test --capture=tee-sys
 ```
 
-Copyright (c) 2020 Ionplus AG
+Copyright (c) 2021 Ionplus AG
